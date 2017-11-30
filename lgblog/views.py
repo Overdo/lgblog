@@ -1,5 +1,5 @@
 
-from lgtalk import app, db
+from lgblog import app, db
 from flask import render_template, redirect
 
 
