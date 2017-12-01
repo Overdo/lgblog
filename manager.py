@@ -1,9 +1,8 @@
 # -*- encoding=UTF-8 -*-
 
-from lgblog import app, db
+from lgblog import app, db, models
 from flask_script import Manager
 from sqlalchemy import or_, and_
-from lgblog.models import *
 
 manager = Manager(app)
 
@@ -17,7 +16,10 @@ def make_shell_context():
     """
     return dict(app=app,
                 db=db,
-                User=User)
+                User=models.User,
+                Post=models.Post,
+                Comment=models.Comment
+                )
 
 
 @manager.command
