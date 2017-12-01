@@ -3,6 +3,7 @@
 from lgblog import db
 from datetime import datetime
 import random
+import datetime
 
 
 class User(db.Model):
@@ -56,7 +57,8 @@ class Post(db.Model):
                            secondary='posts_tags',
                            lazy='dynamic')
 
-    def __init__(self, title):
+    def __init__(self, id, title):
+        self.id = id
         self.title = title
 
     def __repr__(self):
@@ -91,7 +93,8 @@ class Tag(db.Model):
                             secondary='posts_tags',
                             lazy='dynamic')
 
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.name = name
 
     def __repr__(self):
