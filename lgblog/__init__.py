@@ -1,10 +1,19 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from .config import DevConfig
 
 app = Flask(__name__)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
-app.config.from_pyfile('config/app.conf')
+app.config.from_object(DevConfig)
 db = SQLAlchemy(app)
 app.secret_key = 'nowcoder'
 
-from lgblog import views, models, forms
+from lgblog.controllers import blog
+
+# Register the Blueprint into app object
+app.register_blueprint(blog.blog_blueprint)
+
+@app.route('/')
+def index():
+    # Redirect the Request_url '/' to '/blog/'
+    return redirect(url_for('blog.home'))

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "blog/base.html" %}
 {% block title %}{{ post.name }}{% endblock %}
 
 <!-- Replace the BODY of template base.html -->
@@ -10,7 +10,7 @@
     <div class="col-lg-12">
         <h3>New Comment:</h3>
         <!-- Set the form -->
-        <form method="POST" action="{{ url_for('post', post_id=post.id) }}">
+        <form method="POST" action="{{ url_for('blog.post', post_id=post.id) }}">
             {{ form.hidden_tag() }}
             <div>
                 <!-- Field: `name` label -->

@@ -99,3 +99,4 @@ class Tag(db.Model):
 
     def __repr__(self):
         return "<Model Tag `{}`>".format(self.name)
+

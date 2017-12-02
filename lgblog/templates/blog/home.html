@@ -1,5 +1,5 @@
 <!-- Replace the TITLE of template base.html -->
-{% extends "base.html" %}
+{% extends "blog/base.html" %}
 {% block title %}JmilkFan's Blog{% endblock %}
 
 <!-- Replace the BODY of template base.html -->
@@ -18,7 +18,7 @@
                     <div class="col-lg-12">
                         {{ post.text | truncate(255) | safe }}
                         <!-- Set the link for read more -->
-                        <a href="{{ url_for('post', post_id=post.id) }}">Read More</a>
+                        <a href="{{ url_for('blog.post', post_id=post.id) }}">Read More</a>
                     </div>
                 </div>
             {% endfor %}
@@ -29,7 +29,7 @@
                 <ul>
                     {% for post in recent %}
                         <!-- Set the link for recent posts. -->
-                        <li><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></li>
+                        <li><a href="{{ url_for('blog.post', post_id=post.id) }}">{{ post.title }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -37,12 +37,12 @@
                 <h5>Popular Tags</h5>
                 <ul>
                     {% for tag in top_tags %}
-                        <li><a href="{{ url_for('tag', tag_name=tag[0].name) }}">{{ tag[0].name }}</a></li>
+                        <li><a href="{{ url_for('blog.tag', tag_name=tag[0].name) }}">{{ tag[0].name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
         <!-- Call the Macro: `render_pagination` from base.html -->
-        {{ render_pagination(posts, 'home') }}
+        {{ render_pagination(posts, 'blog.home') }}
     </div>
 {% endblock %}
