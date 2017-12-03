@@ -1,24 +1,32 @@
-from lgblog import app, db
+from lgblog import db
 from flask import render_template, redirect
 from lgblog.models import *
 from sqlalchemy import func
-from lgblog.views import blog_blueprint
 from lgblog.forms import CommentForm
+from os import path
+from flask import render_template, Blueprint, redirect, url_for
+
+blog_blueprint = Blueprint(
+    'blog',
+    __name__,
+    template_folder=path.join('templates/blog'),
+    url_prefix='/blog')
+
 
 def sidebar_data():
     """Set the sidebar function."""
 
     # Get post of recent
     recent = db.session.query(Post).order_by(
-            Post.publish_date.desc()
-        ).limit(5).all()
+        Post.publish_date.desc()
+    ).limit(5).all()
 
     # Get the tags and sort by count of posts.
     top_tags = db.session.query(
-            Tag, func.count(posts_tags.c.post_id).label('total')
-        ).join(
-            posts_tags
-        ).group_by(Tag).order_by('total DESC').limit(5).all()
+        Tag, func.count(posts_tags.c.post_id).label('total')
+    ).join(
+        posts_tags
+    ).group_by(Tag).order_by('total DESC').limit(5).all()
     return recent, top_tags
 
 

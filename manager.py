@@ -38,7 +38,7 @@ def init_database():
     db.drop_all()
     db.create_all()
 
-    user = User(id=str(uuid4()), username='jmilkfan', password='fanguiju')
+    user = User(id=str(uuid4()), username='jmilkfan', password='overdo')
     db.session.add(user)
     db.session.commit()
 

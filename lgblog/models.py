@@ -4,6 +4,7 @@ from lgblog import db
 from datetime import datetime
 import random
 import datetime
+from . import bcrypt
 
 
 class User(db.Model):
@@ -23,11 +24,18 @@ class User(db.Model):
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
-        self.password = password
+        self.password = self.set_password(password)
 
     def __repr__(self):
         """Define the string format for instance of User."""
         return "<Model User `{}`>".format(self.username)
+
+    def set_password(self, password):
+        """Convert the password to cryptograph via flask-bcrypt"""
+        return bcrypt.generate_password_hash(password)
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
 
 
 # 多对多必须的中间关联表
@@ -99,4 +107,3 @@ class Tag(db.Model):
 
     def __repr__(self):
         return "<Model Tag `{}`>".format(self.name)
-
