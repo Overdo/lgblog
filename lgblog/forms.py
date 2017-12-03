@@ -4,6 +4,13 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from lgblog.models import User
 
 
+class PostForm(FlaskForm):
+    """Post Form."""
+
+    title = StringField('Title', [DataRequired(), Length(max=255)])
+    text = TextAreaField('Blog Content', [DataRequired()])
+
+
 class CommentForm(FlaskForm):
     """Form vaildator for comment."""
 
