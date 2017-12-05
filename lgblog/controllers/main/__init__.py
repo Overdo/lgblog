@@ -4,20 +4,21 @@ from os import path
 from lgblog.models import User
 from lgblog import db
 from uuid import uuid4
+from flask_login import login_user, logout_user
 
-main_blue_print = Blueprint(
+main_blueprint = Blueprint(
     'main',
     __name__,
     template_folder=path.join(path.pardir, 'templates', 'main')
 )
 
 
-@main_blue_print.route('/')
+@main_blueprint.route('/')
 def index():
     return redirect(url_for('blog.home'))
 
 
-@main_blue_print.route('/login/', methods=['GET', 'POST'])
+@main_blueprint.route('/login/', methods=['GET', 'POST'])
 def login():
     """View function for login."""
 
@@ -25,21 +26,30 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        flash("you have been loged in ", category=success)
+        user = User.query.filter_by(username=form.username.data).one()
+
+        # Using the Flask-Login to processing and check the login status for user
+        # Remember the user's login status.
+        login_user(user, remember=form.rememberme.data)
+
+        flash("you have been loged in ")
         return redirect(url_for('blog.home'))
 
     return render_template('main/login.html', form=form)
 
 
-@main_blue_print.route('/logout', methods=['GET', 'POST'])
+@main_blueprint.route('/logout', methods=['GET', 'POST'])
 def logout():
     """View function for logout."""
+
+    # Using the Flask-Login to processing and check the logout status for user.
+    logout_user()
 
     flash("You have been logged out.", category="success")
     return redirect(url_for('blog.home'))
 
 
-@main_blue_print.route('/register', methods=['GET', 'POST'])
+@main_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     """View function for Register."""
 

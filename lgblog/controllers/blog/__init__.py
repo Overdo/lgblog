@@ -1,5 +1,5 @@
 from lgblog import db
-from flask import render_template, redirect
+from flask import render_template, redirect, flash
 from lgblog.models import *
 from sqlalchemy import func
 from lgblog.forms import CommentForm, PostForm
@@ -7,6 +7,7 @@ from os import path
 from flask import render_template, Blueprint, redirect, url_for
 from datetime import datetime
 from uuid import uuid4
+from flask_login import login_required, current_user
 
 blog_blueprint = Blueprint(
     'blog',
@@ -109,9 +110,14 @@ def user(username):
 
 
 @blog_blueprint.route('/new', methods=['GET', 'POST'])
+@login_required
 def new_post():
     """View function for new_port."""
     form = PostForm()
+
+    if not current_user:
+        flash("you need login!!!")
+        return redirect(url_for('blog.home'))
 
     if form.validate_on_submit():
         new_post = Post(id=str(uuid4()), title=form.title.data)

@@ -5,6 +5,8 @@ from datetime import datetime
 import random
 import datetime
 from . import bcrypt
+from flask_login import AnonymousUserMixin
+from unidecode import unidecode
 
 
 class User(db.Model):
@@ -36,6 +38,27 @@ class User(db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
+
+    def is_authenticated(self):
+        """Check the user whether logged in."""
+        if isinstance(self, AnonymousUserMixin):
+            return False
+        else:
+            return True
+
+    def is_active(self):
+        """Check the user whether pass the activation process."""
+        return True
+
+    def is_anonymous(self):
+        if isinstance(self, AnonymousUserMixin):
+            return True
+        else:
+            return False
+
+    def get_id(self):
+        """Get the user's uuid from database."""
+        return unidecode(self.id)
 
 
 # 多对多必须的中间关联表

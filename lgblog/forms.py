@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, TextAreaField, PasswordField
+from wtforms import StringField, TextAreaField, PasswordField,BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
 from lgblog.models import User
 
@@ -26,6 +26,7 @@ class CommentForm(FlaskForm):
 class LoginForm(FlaskForm):
     username = StringField('Username', [DataRequired(), Length(max=255)])
     password = PasswordField('Password', [DataRequired()])
+    rememberme = BooleanField("Remember me")
 
     def validate(self):
         """Validator for check the account information."""
