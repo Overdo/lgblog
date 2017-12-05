@@ -8,8 +8,8 @@ from flask import render_template, Blueprint, redirect, url_for
 from datetime import datetime
 from uuid import uuid4
 from flask_login import login_required, current_user
-from lgblog.extensions import poster_permission
-from flask_principal import Permission,UserNeed,RoleNeed
+from lgblog.extensions import poster_permission, admin_permission
+from flask_principal import Permission, UserNeed, RoleNeed, abort
 
 blog_blueprint = Blueprint(
     'blog',
@@ -150,10 +150,11 @@ def edit_post(id):
         flash("you need login")
         return redirect(url_for('main.login'))
 
-    # Only the post onwer can be edit this post.
-    if current_user != post.users:
-        flash('Only the post onwer can be edit this post.')
-        return redirect(url_for('blog.post', post_id=id))
+    #
+    # # Only the post onwer can be edit this post.
+    # if current_user != post.users:
+    #     flash('Only the post onwer can be edit this post.')
+    #     return redirect(url_for('blog.post', post_id=id))
 
     # 当 user 是 poster 或者 admin 时, 才能够编辑文章
     # Admin can be edit the post.

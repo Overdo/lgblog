@@ -59,6 +59,7 @@ def init_database():
     role_poster = Role(id=str(uuid4()), name="poster")
     role_default = Role(id=str(uuid4()), name="default")
     role_poster.users = [user]
+    role_admin.users = [user]
 
     db.session.add(role_admin)
     db.session.add(role_poster)
