@@ -68,7 +68,7 @@ def init_database():
         new_post = Post(id=str(uuid4()), title="Post" + str(i))
         new_post.user_id = user.id
         new_post.publish_date = datetime.datetime.now()
-        new_post.text = s
+        new_post.text = 'this is example text'
         new_post.tags = random.sample(tag_list, random.randint(1, 3))
         db.session.add(new_post)
 

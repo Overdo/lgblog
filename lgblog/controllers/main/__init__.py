@@ -71,5 +71,6 @@ def register():
               category="success")
 
         return redirect(url_for('main.login'))
+    flash('Your username or password is invalide')
     return render_template('main/register.html',
                            form=form)

@@ -125,8 +125,11 @@ def new_post():
         new_post = Post(id=str(uuid4()), title=form.title.data)
         new_post.text = form.text.data
         new_post.publish_date = datetime.now()
-
+        new_post.user_id = current_user.get_id()
+        role = db.session.query(Role).filter_by(name='poster').first()
+        role.users.append(current_user)
         db.session.add(new_post)
+        db.session.add(role)
         db.session.commit()
         return redirect(url_for('blog.home'))
 
@@ -156,8 +159,6 @@ def edit_post(id):
     # Admin can be edit the post.
     permission = Permission(UserNeed(post.users.id))
     if permission.can() or admin_permission.can():
-        form = PostForm()
-
         form = PostForm()
 
         if form.validate_on_submit():

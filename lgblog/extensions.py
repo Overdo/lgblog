@@ -16,6 +16,7 @@ login_manager.login_message_category = "info"
 def load_user(userid):
     '''load the user info'''
     from lgblog.models import User
+
     return User.query.filter_by(id=userid).first()
 
 
