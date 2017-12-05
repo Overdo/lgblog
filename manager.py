@@ -5,6 +5,7 @@ from flask_script import Manager
 from sqlalchemy import or_, and_
 from lgblog.models import *
 from uuid import uuid4
+from flask_principal import Permission, RoleNeed
 
 manager = Manager(app)
 
@@ -18,9 +19,10 @@ def make_shell_context():
     """
     return dict(app=app,
                 db=db,
-                User=models.User,
-                Post=models.Post,
-                Comment=models.Comment
+                User=User,
+                Post=Post,
+                Comment=Comment,
+                Role=Role
                 )
 
 
@@ -51,9 +53,20 @@ def init_database():
 
     s = "EXAMPLE TEXT"
 
+    # 这里设定了 3 种权限, 这些权限会被绑定到 Identity 之后才会发挥作用.
+    # Init the role permission via RoleNeed(Need).
+    role_admin = Role(id=str(uuid4()), name="admin")
+    role_poster = Role(id=str(uuid4()), name="poster")
+    role_default = Role(id=str(uuid4()), name="default")
+    role_poster.users = [user]
+
+    db.session.add(role_admin)
+    db.session.add(role_poster)
+    db.session.add(role_default)
+
     for i in range(100):
         new_post = Post(id=str(uuid4()), title="Post" + str(i))
-        new_post.user = user
+        new_post.user_id = user.id
         new_post.publish_date = datetime.datetime.now()
         new_post.text = s
         new_post.tags = random.sample(tag_list, random.randint(1, 3))

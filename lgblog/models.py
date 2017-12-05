@@ -9,6 +9,11 @@ from flask_login import AnonymousUserMixin
 from unidecode import unidecode
 
 
+users_roles = db.Table('users_roles',
+                       db.Column('user_id', db.String(45), db.ForeignKey('users.id')),
+                       db.Column('role_id', db.String(45), db.ForeignKey('roles.id')))
+
+
 class User(db.Model):
     """Represents Proected users."""
 
@@ -22,6 +27,11 @@ class User(db.Model):
         'Post',
         backref='users',
         lazy='dynamic')
+
+    roles = db.relationship(
+        'Role',
+        secondary=users_roles,
+        backref=db.backref('users', lazy='dynamic'))
 
     def __init__(self, id, username, password):
         self.id = id
@@ -65,7 +75,6 @@ class User(db.Model):
 posts_tags = db.Table('posts_tags',
                       db.Column('post_id', db.String(45), db.ForeignKey('posts.id')),
                       db.Column('tag_id', db.String(45), db.ForeignKey('tags.id')))
-
 
 class Post(db.Model):
     """Represents Proected posts."""
@@ -130,3 +139,19 @@ class Tag(db.Model):
 
     def __repr__(self):
         return "<Model Tag `{}`>".format(self.name)
+
+
+class Role(db.Model):
+    """Represents Proected roles."""
+    __tablename__ = 'roles'
+
+    id = db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(255), unique=True)
+    description = db.Column(db.String(255))
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def __repr__(self):
+        return "<Model Role `{}`>".format(self.name)

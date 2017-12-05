@@ -4,7 +4,8 @@ from os import path
 from lgblog.models import User
 from lgblog import db
 from uuid import uuid4
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user, AnonymousUserMixin
+from flask_principal import identity_changed, current_app, AnonymousIdentity
 
 main_blueprint = Blueprint(
     'main',
@@ -26,7 +27,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).one()
+        user = User.query.filter_by(username=form.username.data).first()
 
         # Using the Flask-Login to processing and check the login status for user
         # Remember the user's login status.
@@ -44,6 +45,10 @@ def logout():
 
     # Using the Flask-Login to processing and check the logout status for user.
     logout_user()
+
+    identity_changed.send(
+        current_app._get_current_object(),
+        identity=AnonymousIdentity())
 
     flash("You have been logged out.", category="success")
     return redirect(url_for('blog.home'))

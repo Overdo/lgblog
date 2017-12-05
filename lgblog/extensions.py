@@ -1,5 +1,7 @@
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_principal import Principal, Permission, RoleNeed
+
 
 bcrypt = Bcrypt()
 
@@ -16,3 +18,12 @@ def load_user(userid):
     from lgblog.models import User
     return User.query.filter_by(id=userid).first()
 
+
+# Create the Flask-Principal's instance
+principals = Principal()
+
+# 这里设定了 3 种权限, 这些权限会被绑定到 Identity 之后才会发挥作用.
+# Init the role permission via RoleNeed(Need).
+admin_permission = Permission(RoleNeed('admin'))
+poster_permission = Permission(RoleNeed('poster'))
+default_permission = Permission(RoleNeed('default'))

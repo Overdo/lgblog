@@ -8,6 +8,8 @@ from flask import render_template, Blueprint, redirect, url_for
 from datetime import datetime
 from uuid import uuid4
 from flask_login import login_required, current_user
+from lgblog.extensions import poster_permission
+from flask_principal import Permission,UserNeed,RoleNeed
 
 blog_blueprint = Blueprint(
     'blog',
@@ -133,21 +135,42 @@ def new_post():
 
 
 @blog_blueprint.route('/edit/<string:id>', methods=['GET', 'POST'])
+@login_required
+@poster_permission.require(http_exception=403)
 def edit_post(id):
     """View function for edit_post."""
 
     post = Post.query.get_or_404(id)
-    form = PostForm()
 
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.text = form.text.data
-        post.publish_date = datetime.now()
+    # Ensure the user logged in.
+    if not current_user:
+        flash("you need login")
+        return redirect(url_for('main.login'))
 
-        # Update the post
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('blog.post', post_id=post.id))
+    # Only the post onwer can be edit this post.
+    if current_user != post.users:
+        flash('Only the post onwer can be edit this post.')
+        return redirect(url_for('blog.post', post_id=id))
+
+    # 当 user 是 poster 或者 admin 时, 才能够编辑文章
+    # Admin can be edit the post.
+    permission = Permission(UserNeed(post.users.id))
+    if permission.can() or admin_permission.can():
+        form = PostForm()
+
+        form = PostForm()
+
+        if form.validate_on_submit():
+            post.title = form.title.data
+            post.text = form.text.data
+            post.publish_date = datetime.now()
+
+            # Update the post
+            db.session.add(post)
+            db.session.commit()
+            return redirect(url_for('blog.post', post_id=post.id))
+    else:
+        abort(403)
 
     form.title.data = post.title
     form.text.data = post.text
