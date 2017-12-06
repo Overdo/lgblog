@@ -1,11 +1,10 @@
 from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from .config import DevConfig
-from .extensions import bcrypt,login_manager
+from .extensions import bcrypt, login_manager
 from lgblog.extensions import principals
-from flask_principal import identity_loaded,identity_changed,RoleNeed,UserNeed
+from flask_principal import identity_loaded, identity_changed, RoleNeed, UserNeed
 from flask_login import current_user
-
 
 app = Flask(__name__)
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
@@ -29,6 +28,8 @@ def index():
 
 
 principals.init_app(app)
+
+
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     """Change the role via add the Need object into Role.
@@ -47,3 +48,8 @@ def on_identity_loaded(sender, identity):
     if hasattr(current_user, 'roles'):
         for role in current_user.roles:
             identity.provides.add(RoleNeed(role.name))
+
+
+from lgblog.extensions import cache
+
+cache.init_app(app)

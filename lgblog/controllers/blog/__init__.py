@@ -4,11 +4,11 @@ from lgblog.models import *
 from sqlalchemy import func
 from lgblog.forms import CommentForm, PostForm
 from os import path
-from flask import render_template, Blueprint, redirect, url_for
+from flask import render_template, Blueprint, redirect, url_for, request
 from datetime import datetime
 from uuid import uuid4
 from flask_login import login_required, current_user
-from lgblog.extensions import poster_permission, admin_permission
+from lgblog.extensions import poster_permission, admin_permission, cache
 from flask_principal import Permission, UserNeed, RoleNeed, abort
 
 blog_blueprint = Blueprint(
@@ -18,6 +18,7 @@ blog_blueprint = Blueprint(
     url_prefix='/blog')
 
 
+@cache.cached(timeout=7200, key_prefix='sidebar_data')
 def sidebar_data():
     """Set the sidebar function."""
 
@@ -37,6 +38,7 @@ def sidebar_data():
 
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
+@cache.cached(timeout=60)
 def home(page=1):
     """View function for home page"""
 
@@ -51,7 +53,18 @@ def home(page=1):
                            top_tags=top_tags)
 
 
-@blog_blueprint.route('/post/<string:post_id>')
+def make_cache_key(*args, **kwargs):
+    """Dynamic creation the request url."""
+
+    path = request.path
+    args = str(hash(frozenset(request.args.items())))
+    # lang = get_locale()
+    # return (path + args + lang).encode('utf-8')
+    return (path + args).encode('utf-8')
+
+
+@blog_blueprint.route('/post/<string:post_id>', methods=('GET', 'POST'))
+@cache.cached(timeout=60, key_prefix=make_cache_key)
 def post(post_id):
     """View function for post page"""
 
@@ -83,6 +96,7 @@ def post(post_id):
 
 
 @blog_blueprint.route('/tag/<string:tag_name>')
+@cache.cached(timeout=7200, key_prefix='tag_data')
 def tag(tag_name):
     """View function for tag page"""
 

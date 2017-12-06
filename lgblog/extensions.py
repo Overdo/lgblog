@@ -1,6 +1,7 @@
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal, Permission, RoleNeed
+from flask_cache import Cache
 
 
 bcrypt = Bcrypt()
@@ -28,3 +29,6 @@ principals = Principal()
 admin_permission = Permission(RoleNeed('admin'))
 poster_permission = Permission(RoleNeed('poster'))
 default_permission = Permission(RoleNeed('default'))
+
+# Create the Flask-Cache's instance
+cache = Cache()

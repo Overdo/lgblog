@@ -18,3 +18,10 @@ class DevConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     RECAPTCHA_PUBLIC_KEY = "6LezbjsUAAAAAHqK2IXQ-SrVLv9oP8nIiNSwxy54"
     RECAPTCHA_PRIVATE_KEY ="6LezbjsUAAAAAGgK8RVMYfC8wr3GJ53wVpQuPIzp"
+
+    # # Celery <--> RabbitMQ connection
+    # CELERY_RESULT_BACKEND = "amqp://guest:guest@localhost:5672//"
+    # CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"
+
+    #### Flask-Cache's config
+    CACHE_TYPE = 'simple'
