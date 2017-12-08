@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from .config import DevConfig
 from .extensions import bcrypt, login_manager
-from lgblog.extensions import principals
+from lgblog.extensions import principals, cache, flask_admin
 from flask_principal import identity_loaded, identity_changed, RoleNeed, UserNeed
 from flask_login import current_user
 
@@ -12,7 +12,6 @@ app.config.from_object(DevConfig)
 db = SQLAlchemy(app)
 app.secret_key = 'nowcoder'
 bcrypt.init_app(app)
-login_manager.init_app(app)
 
 from lgblog.controllers import blog, main
 
@@ -20,12 +19,18 @@ from lgblog.controllers import blog, main
 app.register_blueprint(blog.blog_blueprint)
 app.register_blueprint(main.main_blueprint)
 
+# -----------------------------------------------------
+
+login_manager.init_app(app)
+
 
 @app.route('/')
 def index():
     # Redirect the Request_url '/' to '/blog/'
     return redirect(url_for('blog.home'))
 
+
+# -----------------------------------------------------
 
 principals.init_app(app)
 
@@ -50,6 +55,19 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(RoleNeed(role.name))
 
 
-from lgblog.extensions import cache
+# -----------------------------------------------------
 
 cache.init_app(app)
+
+# -----------------------------------------------------
+from lgblog.models import *
+from lgblog.controllers.admin import  CustomModelView, PostView
+
+# Init the Flask-Admin via app object
+flask_admin.init_app(app)
+# Register view function `CustomModelView` into Flask-Admin
+models = [Role, Tag, User]
+for model in models:
+    flask_admin.add_view(
+        CustomModelView(model, db.session, category='Models'))
+flask_admin.add_view(PostView(Post, db.session, category='Models'))

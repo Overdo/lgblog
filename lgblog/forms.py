@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, TextAreaField, PasswordField,BooleanField
+from wtforms import StringField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
 from lgblog.models import User
 
@@ -72,3 +72,37 @@ class RegisterForm(FlaskForm):
             self.username.errors.append('User with that name already exists.')
             return False
         return True
+
+
+from wtforms import (widgets,
+                     StringField,
+                     TextField,
+                     TextAreaField,
+                     PasswordField,
+                     BooleanField,
+                     ValidationError,
+                     widgets,
+                     StringField,
+                     TextField,
+                     TextAreaField,
+                     PasswordField,
+                     BooleanField,
+                     ValidationError)
+
+
+class CKTextAreaWidget(widgets.TextArea):
+    """CKeditor form for Flask-Admin."""
+
+    def __call__(self, field, **kwargs):
+        """Define callable type(class)."""
+
+        # Add a new class property ckeditor: `<input class=ckeditor ...>`
+        kwargs.setdefault('class_', 'ckeditor')
+        return super(CKTextAreaWidget, self).__call__(field, **kwargs)
+
+
+class CKTextAreaField(TextAreaField):
+    """Create a new Field type."""
+
+    # Add a new widget `CKTextAreaField` inherit from TextAreaField.
+    widget = CKTextAreaWidget()

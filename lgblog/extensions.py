@@ -3,7 +3,6 @@ from flask_login import LoginManager
 from flask_principal import Principal, Permission, RoleNeed
 from flask_cache import Cache
 
-
 bcrypt = Bcrypt()
 
 login_manager = LoginManager()
@@ -32,3 +31,8 @@ default_permission = Permission(RoleNeed('default'))
 
 # Create the Flask-Cache's instance
 cache = Cache()
+
+from flask_admin import Admin
+
+# Create the Flask-Admin's instance
+flask_admin = Admin()
