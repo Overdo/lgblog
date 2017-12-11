@@ -1,13 +1,14 @@
 # -*- encoding=UTF-8 -*-
 
-from lgblog import db
+from lgblog import db, cache
 from datetime import datetime
 import random
 import datetime
 from . import bcrypt
 from flask_login import AnonymousUserMixin
+from flask import current_app
 from unidecode import unidecode
-
+from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadSignature
 
 users_roles = db.Table('users_roles',
                        db.Column('user_id', db.String(45), db.ForeignKey('users.id')),
@@ -32,6 +33,26 @@ class User(db.Model):
         'Role',
         secondary=users_roles,
         backref=db.backref('users', lazy='dynamic'))
+
+    @staticmethod
+    @cache.memoize(60)
+    def verify_auth_token(token):
+        """Validate the token whether is night."""
+
+        serializer = TimedJSONWebSignatureSerializer(
+            current_app.config['SECRET_KEY'])
+        try:
+            # serializer object already has tokens in itself and wait for
+            # compare with token from HTTP Request /api/posts Method `POST`.
+            data = serializer.loads(token)
+            print(data)
+        except SignatureExpired:
+            return None
+        except BadSignature:
+            return None
+
+        user = User.query.filter_by(id=data['id']).first()
+        return user
 
     def __init__(self, id, username, password):
         self.id = id
@@ -75,6 +96,7 @@ class User(db.Model):
 posts_tags = db.Table('posts_tags',
                       db.Column('post_id', db.String(45), db.ForeignKey('posts.id')),
                       db.Column('tag_id', db.String(45), db.ForeignKey('tags.id')))
+
 
 class Post(db.Model):
     """Represents Proected posts."""

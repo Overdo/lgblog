@@ -2,6 +2,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_principal import Principal, Permission, RoleNeed
 from flask_cache import Cache
+from flask_restful import Api
 
 bcrypt = Bcrypt()
 
@@ -36,3 +37,6 @@ from flask_admin import Admin
 
 # Create the Flask-Admin's instance
 flask_admin = Admin()
+
+# Create the Flask-Restful's instance
+restful_api = Api()

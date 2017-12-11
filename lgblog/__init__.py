@@ -61,7 +61,7 @@ cache.init_app(app)
 
 # -----------------------------------------------------
 from lgblog.models import *
-from lgblog.controllers.admin import  CustomModelView, PostView
+from lgblog.controllers.admin import CustomModelView, PostView
 
 # Init the Flask-Admin via app object
 flask_admin.init_app(app)
@@ -71,3 +71,24 @@ for model in models:
     flask_admin.add_view(
         CustomModelView(model, db.session, category='Models'))
 flask_admin.add_view(PostView(Post, db.session, category='Models'))
+
+from lgblog.extensions import restful_api
+
+from lgblog.controllers.flask_restful.posts import PostApi
+from lgblog.controllers.flask_restful.auth import AuthApi
+
+
+# Init the Flask-Restful via app object
+# Define the route of restful_api
+restful_api.add_resource(
+    AuthApi,
+    '/api/auth',
+    endpoint='restful_api_auth')
+
+restful_api.add_resource(
+    PostApi,
+    '/api/posts',
+    '/api/posts/<string:post_id>',
+    endpoint='restful_api_post')
+
+restful_api.init_app(app)
