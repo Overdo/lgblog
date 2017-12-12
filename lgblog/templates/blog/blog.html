@@ -39,7 +39,7 @@
 
                         <p>{{ post.text | truncate(255) | safe }} </p>
                         <!-- Set the link for read more -->
-                        <a href="{{ url_for('blog.post', post_id=post.id) }}">Read More</a>
+                        <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">Read More</a>
                     </div>
 
                 </article> <!-- post end -->
@@ -48,7 +48,7 @@
             <!-- Pagination -->
             <nav class="col full pagination">
                 <ul>
-                    {{ render_pagination(posts, 'blog.blog') }}
+                    {{ render_pagination(posts, 'blog.blog_list') }}
                 </ul>
             </nav>
 
@@ -76,7 +76,7 @@
                     <ul>
                         {% for post in recent %}
                             <!-- Set the link for recent posts. -->
-                            <li><a href="{{ url_for('blog.post', post_id=post.id) }}">{{ post.title }}</a></li>
+                            <li><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">{{ post.title }}</a></li>
                         {% endfor %}
                     </ul>
 

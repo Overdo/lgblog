@@ -27,7 +27,7 @@ login_manager.init_app(app)
 @app.route('/')
 def index():
     # Redirect the Request_url '/' to '/blog/'
-    return redirect(url_for('blog.blog'))
+    return redirect(url_for('blog.blog_list'))
 
 
 # -----------------------------------------------------

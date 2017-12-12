@@ -39,7 +39,7 @@ def sidebar_data():
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
 @cache.cached(timeout=60)
-def blog(page=1):
+def blog_list(page=1):
     """View function for home page"""
 
     posts = Post.query.order_by(
@@ -65,7 +65,7 @@ def make_cache_key(*args, **kwargs):
 
 @blog_blueprint.route('/post/<string:post_id>', methods=('GET', 'POST'))
 @cache.cached(timeout=60, key_prefix=make_cache_key)
-def post(post_id):
+def blog_detail(post_id):
     """View function for post page"""
 
     form = CommentForm()
@@ -133,7 +133,7 @@ def new_post():
 
     if not current_user:
         flash("you need login!!!")
-        return redirect(url_for('blog.blog'))
+        return redirect(url_for('blog.blog_list'))
 
     if form.validate_on_submit():
         new_post = Post(id=str(uuid4()), title=form.title.data)
@@ -145,7 +145,7 @@ def new_post():
         db.session.add(new_post)
         db.session.add(role)
         db.session.commit()
-        return redirect(url_for('blog.blog'))
+        return redirect(url_for('blog.blog_list'))
 
     return render_template('blog/new_post.html',
                            form=form)
@@ -168,7 +168,7 @@ def edit_post(id):
     # # Only the post onwer can be edit this post.
     # if current_user != post.users:
     #     flash('Only the post onwer can be edit this post.')
-    #     return redirect(url_for('blog.post', post_id=id))
+    #     return redirect(url_for('blog.blog_detail', post_id=id))
 
     # 当 user 是 poster 或者 admin 时, 才能够编辑文章
     # Admin can be edit the post.
@@ -184,7 +184,7 @@ def edit_post(id):
             # Update the post
             db.session.add(post)
             db.session.commit()
-            return redirect(url_for('blog.post', post_id=post.id))
+            return redirect(url_for('blog.blog_detail', post_id=post.id))
     else:
         abort(403)
 

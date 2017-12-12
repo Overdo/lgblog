@@ -176,7 +176,7 @@
                         <ul>
                             {% for post in recent %}
                                 <!-- Set the link for recent posts. -->
-                                <li><a href="{{ url_for('blog.post', post_id=post.id) }}">{{ post.title }}</a></li>
+                                <li><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">{{ post.title }}</a></li>
                             {% endfor %}
                         </ul>
 
