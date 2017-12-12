@@ -208,7 +208,7 @@
                         <h5 class="widget-title">Tags</h5>
                         <div class="tagcloud cf">
                             {% for tag in top_tags %}
-                                <a href="{{ url_for('blog.tag', tag_name=tag[0].name) }}">{{ tag[0].name }}</a>
+                                <a href="{{ url_for('blog.blog_list', tag_name=tag[0].name) }}">{{ tag[0].name }}</a>
                             {% endfor %}
                         </div>
                     </div>

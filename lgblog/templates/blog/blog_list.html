@@ -18,7 +18,8 @@
 
                     <div class="entry-header cf">
 
-                        <h1><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title="">{{ post.title }}</a></h1>
+                        <h1><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title="">{{ post.title }}</a>
+                        </h1>
 
                         <p class="post-meta">
                             <time class="date" datetime="{{ post.publish_date }}">{{ post.publish_date }}</time>
@@ -31,8 +32,9 @@
                     </div>
 
                     <div class="post-thumb">
-                        <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title=""><img src="images/post-image/post-image-1300x500-01.jpg"
-                                                            alt="post-image" title="post-image"></a>
+                        <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title=""><img
+                                src="images/post-image/post-image-1300x500-01.jpg"
+                                alt="post-image" title="post-image"></a>
                     </div>
 
                     <div class="post-content">
@@ -45,10 +47,57 @@
                 </article> <!-- post end -->
             {% endfor %}
 
+            {#      render_pagination      #}
+            {% macro render_pagination(pagination, endpoint, tag_name) %}
+                <nav>
+                    <ul class="pagination">
+                        <li>
+                            {% if pagination.has_prev %}
+                                <li>
+                                    <a href="{{ url_for('blog.blog_list', page=pagination.prev().page,tag_name=tag_name) }} "
+                                       class="page-numbers prev"
+                                       aria-label="Previous">Prev
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span href="{{ url_for('blog.blog_list', page=1,tag_name=tag_name) }}"
+                                          class="page-numbers prev inactive"
+                                          aria-label="Previous">Prev
+                                    </span>
+                                </li>
+                            {% endif %}
+                        </li>
+                        {% for page in pagination.iter_pages() %}
+                            {% if page %}
+                                {% if page != pagination.page %}
+                                    <li>
+                                        <a href="{{ url_for(endpoint, page=page,tag_name=tag_name) }}"
+                                           class="page-numbers">
+                                            {{ page }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li><a href="" class="page-numbers current">{{ page }}</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li><a>...</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <li>
+                            <a href="{{ url_for('blog.blog_list', page=pagination.next().page ,tag_name=tag_name) }}"
+                               class="page-numbers next"
+                               aria-label="Next">Next
+                            </a>
+                        <li>
+                    </ul>
+                </nav>
+            {% endmacro %}
+
             <!-- Pagination -->
             <nav class="col full pagination">
                 <ul>
-                    {{ render_pagination(posts, 'blog.blog_list') }}
+                    {{ render_pagination(posts, 'blog.blog_list',tag_name) }}
                 </ul>
             </nav>
 
@@ -107,8 +156,8 @@
                 <div class="widget widget_tag_cloud">
                     <h5 class="widget-title">Tags</h5>
                     <div class="tagcloud cf">
-                          {% for tag in top_tags %}
-                            <a href="{{ url_for('blog.tag', tag_name=tag[0].name) }}">{{ tag[0].name }}</a>
+                        {% for tag in tags %}
+                            <a href="{{ url_for('blog.blog_list', tag_name=tag.name) }}">{{ tag.name }}</a>
                         {% endfor %}
                     </div>
                 </div>

@@ -49,7 +49,11 @@ def init_database():
     tag_two = Tag(id=str(uuid4()), name='Flask')
     tag_three = Tag(id=str(uuid4()), name='SQLALchemy')
     tag_four = Tag(id=str(uuid4()), name='JMilkFan')
-    tag_list = [tag_one, tag_two, tag_three, tag_four]
+    tag_five = Tag(id=str(uuid4()), name='C++')
+    tag_6 = Tag(id=str(uuid4()), name='JAVA')
+    tag_7 = Tag(id=str(uuid4()), name='golang')
+    tag_8 = Tag(id=str(uuid4()), name='fuck')
+    tag_list = [tag_one, tag_two, tag_three, tag_four, tag_five, tag_6, tag_7, tag_8]
 
     s = "EXAMPLE TEXT"
 
@@ -69,7 +73,7 @@ def init_database():
         new_post = Post(id=str(uuid4()), title="Post" + str(i))
         new_post.user_id = user.id
         new_post.publish_date = datetime.datetime.now()
-        new_post.text = 'this is example text'
+        new_post.text = 'this is example textbalabalabsakdhjaslkdjlsajdljasldjlaskjdlasjdlkajslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjd'
         new_post.tags = random.sample(tag_list, random.randint(1, 3))
         db.session.add(new_post)
 

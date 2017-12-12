@@ -38,19 +38,33 @@ def sidebar_data():
 
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
+@blog_blueprint.route('/tag/<string:tag_name>/<int:page>')
+@blog_blueprint.route('/tag/<string:tag_name>')
 @cache.cached(timeout=60)
-def blog_list(page=1):
+def blog_list(page=1, tag_name=None):
     """View function for home page"""
 
+    if tag_name:
+        tags = Tag.query.order_by(Tag.id).all()
+        tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
+        posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
+        recent, top_tags = sidebar_data()
+        return render_template('blog/blog_list.html',
+                               posts=posts,
+                               tag_name=tag_name,
+                               page=page,
+                               recent=recent,
+                               tags=tags)
     posts = Post.query.order_by(
         Post.publish_date.desc()
     ).paginate(page, 5)
-
+    tags = Tag.query.order_by(Tag.id).all()
     recent, top_tags = sidebar_data()
     return render_template('blog/blog_list.html',
                            posts=posts,
-                           recent=recent,
-                           top_tags=top_tags)
+                           tags=tags,
+                           tag_name=tag_name,
+                           recent=recent)
 
 
 def make_cache_key(*args, **kwargs):
@@ -91,23 +105,25 @@ def blog_detail(post_id):
                            tags=tags,
                            comments=comments,
                            form=form,
-                           recent=recent,
-                           top_tags=top_tags)
+                           recent=recent)
 
 
-@blog_blueprint.route('/tag/<string:tag_name>')
-@cache.cached(timeout=7200, key_prefix='tag_data')
-def tag(tag_name):
+@blog_blueprint.route('/tag/<string:tag_name>/')
+@cache.cached(timeout=7200)
+def tag(tag_name, page=1):
     """View function for tag page"""
-
+    tags = Tag.query.order_by(Tag.id).all()
     tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
-    posts = tag.posts.order_by(Post.publish_date.desc()).all()
+    posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
     recent, top_tags = sidebar_data()
 
     return render_template('blog/blog_list.html',
+                           tags=tags,
                            tag=tag,
                            posts=posts,
                            recent=recent,
+                           tag_name=tag_name,
+                           page=page,
                            top_tags=top_tags)
 
 
