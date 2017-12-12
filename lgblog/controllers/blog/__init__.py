@@ -44,7 +44,7 @@ def blog(page=1):
 
     posts = Post.query.order_by(
         Post.publish_date.desc()
-    ).paginate(page, 10)
+    ).paginate(page, 5)
 
     recent, top_tags = sidebar_data()
     return render_template('blog/blog.html',
@@ -86,7 +86,7 @@ def post(post_id):
     comments = post.comments.order_by(Comment.date.desc()).all()
     recent, top_tags = sidebar_data()
 
-    return render_template('blog/post.html',
+    return render_template('blog/blog_detail.html',
                            post=post,
                            tags=tags,
                            comments=comments,

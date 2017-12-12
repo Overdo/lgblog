@@ -1,0 +1,236 @@
+{% extends "blog/base.html" %}
+{% block title %}LG's Blog{% endblock %}
+{% block span_title %}LG's Blog{% endblock %}
+
+{% block body %}
+    <!-- Content
+    ================================================== -->
+    <div class="content-outer">
+
+        <div id="page-content" class="row">
+
+            <div id="primary" class="eight columns">
+
+                <article class="post">
+
+                    <div class="entry-header cf">
+
+                        <h1>{{ post.title | safe }}</h1>
+
+                        <p class="post-meta">
+
+                            <time class="date" datetime=" {{ post.publish_date }}"> {{ post.publish_date }}</time>
+                            <span class="categories">
+                                Categories
+                                {% for tag in post.tags %}
+                                    <a href="#">{{ tag.name }}</a> /
+                                {% endfor %}
+                            </span>
+
+                        </p>
+
+                    </div>
+
+                    <div class="post-thumb">
+                        <img src="images/post-image/post-image-1300x500-01.jpg" alt="post-image" title="post-image">
+                    </div>
+
+                    <div class="post-content">
+                        <p>{{ post.text | safe }}</p>
+                        <p class="tags">
+                            <span>Tagged in </span>:
+                            {% for tag in post.tags %}
+                                <a href="#">{{ tag.name }}</a> /
+                            {% endfor %}
+                        </p>
+
+                        <div class="bio cf">
+
+                            <div class="gravatar">
+                                <img src="images/author-img.png" alt="">
+                            </div>
+                            <div class="about">
+                                <h5><a title="Posts by John Doe" href="#" rel="author">John Doe</a></h5>
+                                <p>Jon Doe is lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem
+                                    nibh
+                                    id elit. Duis sed odio sit amet nibh vulputate
+                                    cursus a sit amet mauris. Morbi accumsan ipsum velit. Duis sed odio sit amet nibh
+                                    vulputate
+                                    <a href="#">cursus</a> a sit <a href="#">amet mauris</a>. Morbi elit consequat
+                                    ipsum.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <ul class="post-nav cf">
+                            <li class="prev"><a rel="prev" href="#"><strong>Previous Article</strong> Duis Sed Odio Sit
+                                Amet
+                                Nibh Vulputate</a></li>
+                            <li class="next"><a rel="next" href="#"><strong>Next Article</strong> Morbi Elit Consequat
+                                Ipsum</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                </article> <!-- post end -->
+
+                <!-- Comments
+                ================================================== -->
+                <div id="comments">
+
+                    <h3>5 Comments</h3>
+
+                    <!-- commentlist -->
+                    <ol class="commentlist">
+
+                        <li class="depth-1">
+
+                            <div class="avatar">
+                                <img width="50" height="50" class="avatar" src="images/user-01.png" alt="">
+                            </div>
+
+                            <div class="comment-info">
+                                <cite>Itachi Uchiha</cite>
+
+                                <div class="comment-meta">
+                                    <time class="comment-time" datetime="2014-01-14T23:05">Jan 14, 2013 @ 23:05</time>
+                                    <span class="sep">/</span><a class="reply" href="#">Reply</a>
+                                </div>
+                            </div>
+
+                            <div class="comment-text">
+                                <p>Adhuc quaerendum est ne, vis ut harum tantas noluisse, id suas iisque mei. Nec te
+                                    inani
+                                    ponderum vulputate,
+                                    facilisi expetenda has et. Iudico dictas scriptorem an vim, ei alia mentitum est, ne
+                                    has
+                                    voluptua praesent.</p>
+                            </div>
+                        </li>
+
+                    </ol> <!-- Commentlist End -->
+
+
+                    <!-- respond -->
+                    <div class="respond">
+
+                        <h3>Leave a Comment</h3>
+
+                        <!-- form -->
+                        <form name="contactForm" id="contactForm" method="post" action="">
+                            <fieldset>
+
+                                <div class="cf">
+                                    <label for="cName">Name <span class="required">*</span></label>
+                                    <input name="cName" type="text" id="cName" size="35" value=""/>
+                                </div>
+
+                                <div class="cf">
+                                    <label for="cEmail">Email <span class="required">*</span></label>
+                                    <input name="cEmail" type="text" id="cEmail" size="35" value=""/>
+                                </div>
+
+                                <div class="cf">
+                                    <label for="cWebsite">Website</label>
+                                    <input name="cWebsite" type="text" id="cWebsite" size="35" value=""/>
+                                </div>
+
+                                <div class="message cf">
+                                    <label for="cMessage">Message <span class="required">*</span></label>
+                                    <textarea name="cMessage" id="cMessage" rows="10" cols="50"></textarea>
+                                </div>
+
+                                <button type="submit" class="submit">Submit</button>
+
+                            </fieldset>
+                        </form> <!-- Form End -->
+
+                    </div> <!-- Respond End -->
+
+                </div>  <!-- Comments End -->
+
+            </div>
+
+            {#  右边的内容  #}
+            <div id="secondary" class="four columns end">
+
+                <aside id="sidebar">
+
+                    <div class="widget widget_search">
+                        <h5>Search</h5>
+                        <form action="#">
+
+                            <input class="text-search" type="text"
+                                   onfocus="if (this.value == 'Search here...') { this.value = ''; }"
+                                   onblur="if(this.value == '') { this.value = 'Search here...'; }"
+                                   value="Search here...">
+                            <input type="submit" class="submit-search" value="">
+
+                        </form>
+                    </div>
+
+                    <div class="widget widget_text">
+                        <h5>Recent Posts</h5>
+                        <ul>
+                            {% for post in recent %}
+                                <!-- Set the link for recent posts. -->
+                                <li><a href="{{ url_for('blog.post', post_id=post.id) }}">{{ post.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+
+                    </div>
+
+                    <div class="widget widget_text">
+                        <h5 class="widget-title">Text Widget</h5>
+                        <div class="textwidget">Proin gravida nibh vel velit auctor aliquet.
+                            Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum,
+                            nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus
+                            a sit amet mauris. Morbi accumsan ipsum velit.
+                        </div>
+                    </div>
+
+                    <div class="widget widget_categories">
+                        <h5 class="widget-title">Categories</h5>
+                        <ul class="link-list cf">
+                            <li><a href="#">Designs</a></li>
+                            <li><a href="#">Internet</a></li>
+                            <li><a href="#">Typography</a></li>
+                            <li><a href="#">Photography</a></li>
+                            <li><a href="#">Web Development</a></li>
+                            <li><a href="#">Projects</a></li>
+                            <li><a href="#">Other Stuff</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="widget widget_tag_cloud">
+                        <h5 class="widget-title">Tags</h5>
+                        <div class="tagcloud cf">
+                            {% for tag in top_tags %}
+                                <a href="{{ url_for('blog.tag', tag_name=tag[0].name) }}">{{ tag[0].name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="widget widget_photostream">
+                        <h5>Photostream</h5>
+                        <ul class="photostream cf">
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                            <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        </ul>
+                    </div>
+
+                </aside>
+
+            </div> <!-- Secondary End-->
+        </div>
+    </div> <!-- Content End-->
+{% endblock %}
+
