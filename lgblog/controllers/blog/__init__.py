@@ -104,7 +104,7 @@ def tag(tag_name):
     posts = tag.posts.order_by(Post.publish_date.desc()).all()
     recent, top_tags = sidebar_data()
 
-    return render_template('blog/tag.html',
+    return render_template('blog/blog.html',
                            tag=tag,
                            posts=posts,
                            recent=recent,
