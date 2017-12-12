@@ -29,6 +29,50 @@
     <!-- Favicons
      ================================================== -->
     <link rel="shortcut icon" href="favicon.ico">
+    {% macro render_pagination(pagination, endpoint) %}
+        <nav>
+            <ul class="pagination">
+                <li>
+                    {% if pagination.has_prev %}
+                        <li>
+                            <a href="{{ url_for('blog.blog', page=pagination.prev().page) }} "
+                               class="page-numbers prev"
+                               aria-label="Previous">Prev
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                                            <span href="{{ url_for('blog.blog', page=1) }}"
+                                                  class="page-numbers prev inactive"
+                                                  aria-label="Previous">Prev
+                                            </span>
+                        </li>
+                    {% endif %}
+                </li>
+                {% for page in pagination.iter_pages() %}
+                    {% if page %}
+                        {% if page != pagination.page %}
+                            <li>
+                                <a href="{{ url_for(endpoint, page=page) }}" class="page-numbers">
+                                    {{ page }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li><a href="" class="page-numbers current">{{ page }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <li><a>...</a></li>
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    <a href="{{ url_for('blog.blog', page=pagination.next().page ) }}"
+                       class="page-numbers next"
+                       aria-label="Next">Next
+                    </a>
+                <li>
+            </ul>
+        </nav>
+    {% endmacro %}
 
 </head>
 

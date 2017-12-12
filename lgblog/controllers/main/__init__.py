@@ -16,7 +16,7 @@ main_blueprint = Blueprint(
 
 @main_blueprint.route('/')
 def index():
-    return redirect(url_for('blog.home'))
+    return redirect(url_for('blog.blog'))
 
 
 @main_blueprint.route('/login/', methods=['GET', 'POST'])
@@ -34,7 +34,7 @@ def login():
         login_user(user, remember=form.rememberme.data)
 
         flash("you have been loged in ")
-        return redirect(url_for('blog.home'))
+        return redirect(url_for('blog.blog'))
 
     return render_template('main/login.html', form=form)
 
@@ -51,7 +51,7 @@ def logout():
         identity=AnonymousIdentity())
 
     flash("You have been logged out.", category="success")
-    return redirect(url_for('blog.home'))
+    return redirect(url_for('blog.blog'))
 
 
 @main_blueprint.route('/register', methods=['GET', 'POST'])

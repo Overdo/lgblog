@@ -11,59 +11,47 @@
     <div id="page-content" class="row">
 
         <div id="primary" class="eight columns">
+            <!-- Get Pagination object-->
+            {% for post in posts.items %}
 
-            <article class="post">
+                <article class="post">
 
-                <div class="entry-header cf">
+                    <div class="entry-header cf">
 
-                    <h1><a href="single.html" title="">Proin gravida nibh vel velit auctor aliquet Aenean sollicitudin
-                        auctor.</a></h1>
+                        <h1><a href="single.html" title="">{{ post.title }}</a></h1>
 
-                    <p class="post-meta">
+                        <p class="post-meta">
 
-                        <time class="date" datetime="2014-01-14T11:24">Jan 14, 2014</time>
-                        /
-                        <span class="categories">
-                     <a href="#">Design</a> /
-                     <a href="#">User Inferface</a> /
-                     <a href="#">Web Design</a>
+                            <time class="date" datetime="{{ post.publish_date }}">{{ post.publish_date }}</time>
+                            <span class="categories">
+                                {% for tag in post.tags %}
+                                    <a href="#">{{ tag.name }}</a> /
+                                {% endfor %}
                      </span>
 
-                    </p>
+                        </p>
 
-                </div>
+                    </div>
 
-                <div class="post-thumb">
-                    <a href="single.html" title=""><img src="images/post-image/post-image-1300x500-01.jpg"
-                                                        alt="post-image" title="post-image"></a>
-                </div>
+                    <div class="post-thumb">
+                        <a href="single.html" title=""><img src="images/post-image/post-image-1300x500-01.jpg"
+                                                            alt="post-image" title="post-image"></a>
+                    </div>
 
-                <div class="post-content">
+                    <div class="post-content">
 
-                    <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor,
-                        nisi elit consequat ipsum, nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate
-                        cursus a sit amet mauris. Morbi accumsan ipsum velit. Nam nec tellus a odio tincidunt auctor a
-                        ornare odio. Sed non mauris vitae erat consequat auctor eu in elit. </p>
+                        <p>{{ post.text | truncate(255) | safe }} </p>
+                        <!-- Set the link for read more -->
+                        <a href="{{ url_for('blog.post', post_id=post.id) }}">Read More</a>
+                    </div>
 
-                </div>
-
-            </article> <!-- post end -->
-
+                </article> <!-- post end -->
+            {% endfor %}
 
             <!-- Pagination -->
             <nav class="col full pagination">
                 <ul>
-                    <li><span class="page-numbers prev inactive">Prev</span></li>
-                    <li><span class="page-numbers current">1</span></li>
-                    <li><a href="#" class="page-numbers">2</a></li>
-                    <li><a href="#" class="page-numbers">3</a></li>
-                    <li><a href="#" class="page-numbers">4</a></li>
-                    <li><a href="#" class="page-numbers">5</a></li>
-                    <li><a href="#" class="page-numbers">6</a></li>
-                    <li><a href="#" class="page-numbers">7</a></li>
-                    <li><a href="#" class="page-numbers">8</a></li>
-                    <li><a href="#" class="page-numbers">9</a></li>
-                    <li><a href="#" class="page-numbers next">Next</a></li>
+                    {{ render_pagination(posts, 'blog.blog') }}
                 </ul>
             </nav>
 

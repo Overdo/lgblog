@@ -39,7 +39,7 @@ def sidebar_data():
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
 @cache.cached(timeout=60)
-def home(page=1):
+def blog(page=1):
     """View function for home page"""
 
     posts = Post.query.order_by(
@@ -47,7 +47,7 @@ def home(page=1):
     ).paginate(page, 10)
 
     recent, top_tags = sidebar_data()
-    return render_template('blog/home.html',
+    return render_template('blog/blog.html',
                            posts=posts,
                            recent=recent,
                            top_tags=top_tags)
@@ -133,7 +133,7 @@ def new_post():
 
     if not current_user:
         flash("you need login!!!")
-        return redirect(url_for('blog.home'))
+        return redirect(url_for('blog.blog'))
 
     if form.validate_on_submit():
         new_post = Post(id=str(uuid4()), title=form.title.data)
@@ -145,7 +145,7 @@ def new_post():
         db.session.add(new_post)
         db.session.add(role)
         db.session.commit()
-        return redirect(url_for('blog.home'))
+        return redirect(url_for('blog.blog'))
 
     return render_template('blog/new_post.html',
                            form=form)
