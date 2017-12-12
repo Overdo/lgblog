@@ -47,7 +47,7 @@ def blog_list(page=1):
     ).paginate(page, 5)
 
     recent, top_tags = sidebar_data()
-    return render_template('blog/blog.html',
+    return render_template('blog/blog_list.html',
                            posts=posts,
                            recent=recent,
                            top_tags=top_tags)
@@ -104,7 +104,7 @@ def tag(tag_name):
     posts = tag.posts.order_by(Post.publish_date.desc()).all()
     recent, top_tags = sidebar_data()
 
-    return render_template('blog/blog.html',
+    return render_template('blog/blog_list.html',
                            tag=tag,
                            posts=posts,
                            recent=recent,

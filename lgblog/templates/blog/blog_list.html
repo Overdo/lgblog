@@ -18,7 +18,7 @@
 
                     <div class="entry-header cf">
 
-                        <h1><a href="single.html" title="">{{ post.title }}</a></h1>
+                        <h1><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title="">{{ post.title }}</a></h1>
 
                         <p class="post-meta">
                             <time class="date" datetime="{{ post.publish_date }}">{{ post.publish_date }}</time>
@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="post-thumb">
-                        <a href="single.html" title=""><img src="images/post-image/post-image-1300x500-01.jpg"
+                        <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title=""><img src="images/post-image/post-image-1300x500-01.jpg"
                                                             alt="post-image" title="post-image"></a>
                     </div>
 
