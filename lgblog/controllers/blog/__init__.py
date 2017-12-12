@@ -27,13 +27,8 @@ def sidebar_data():
         Post.publish_date.desc()
     ).limit(5).all()
 
-    # Get the tags and sort by count of posts.
-    top_tags = db.session.query(
-        Tag, func.count(posts_tags.c.post_id).label('total')
-    ).join(
-        posts_tags
-    ).group_by(Tag).order_by('total DESC').limit(5).all()
-    return recent, top_tags
+    all_tags = Tag.query.order_by(Tag.id).all()
+    return recent, all_tags
 
 
 @blog_blueprint.route('/')
@@ -45,24 +40,21 @@ def blog_list(page=1, tag_name=None):
     """View function for home page"""
 
     if tag_name:
-        tags = Tag.query.order_by(Tag.id).all()
         tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
         posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
-        recent, top_tags = sidebar_data()
+        recent, all_tags = sidebar_data()
         return render_template('blog/blog_list.html',
                                posts=posts,
                                tag_name=tag_name,
-                               page=page,
                                recent=recent,
-                               tags=tags)
+                               all_tags=all_tags)
     posts = Post.query.order_by(
         Post.publish_date.desc()
     ).paginate(page, 5)
-    tags = Tag.query.order_by(Tag.id).all()
-    recent, top_tags = sidebar_data()
+    recent, all_tags = sidebar_data()
     return render_template('blog/blog_list.html',
                            posts=posts,
-                           tags=tags,
+                           all_tags=all_tags,
                            tag_name=tag_name,
                            recent=recent)
 
@@ -98,12 +90,13 @@ def blog_detail(post_id):
     post = db.session.query(Post).get_or_404(post_id)
     tags = post.tags
     comments = post.comments.order_by(Comment.date.desc()).all()
-    recent, top_tags = sidebar_data()
+    recent, all_tags = sidebar_data()
 
     return render_template('blog/blog_detail.html',
                            post=post,
                            tags=tags,
                            comments=comments,
+                           all_tags=all_tags,
                            form=form,
                            recent=recent)
 
@@ -112,19 +105,16 @@ def blog_detail(post_id):
 @cache.cached(timeout=7200)
 def tag(tag_name, page=1):
     """View function for tag page"""
-    tags = Tag.query.order_by(Tag.id).all()
     tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
     posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
-    recent, top_tags = sidebar_data()
+    recent, all_tags = sidebar_data()
 
     return render_template('blog/blog_list.html',
-                           tags=tags,
                            tag=tag,
                            posts=posts,
+                           all_tags=all_tags,
                            recent=recent,
-                           tag_name=tag_name,
-                           page=page,
-                           top_tags=top_tags)
+                           tag_name=tag_name)
 
 
 @blog_blueprint.route('/user/<string:username>')
@@ -132,13 +122,13 @@ def user(username):
     """View function for user page"""
     user = db.session.query(User).filter_by(username=username).first_or_404()
     posts = user.posts.order_by(Post.publish_date.desc()).all()
-    recent, top_tags = sidebar_data()
+    recent, all_tags = sidebar_data()
 
     return render_template('blog/user.html',
                            user=user,
                            posts=posts,
                            recent=recent,
-                           top_tags=top_tags)
+                           all_tags=all_tags)
 
 
 @blog_blueprint.route('/new', methods=['GET', 'POST'])
