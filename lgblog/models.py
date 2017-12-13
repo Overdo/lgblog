@@ -109,6 +109,8 @@ class Post(db.Model):
     # Set the foreign key for Post
     user_id = db.Column(db.String(45), db.ForeignKey('users.id'))
 
+    category_id = db.Column(db.String(64), db.ForeignKey('categories.id'))
+
     # Establish contact with Comment's ForeignKey: post_id
     comments = db.relationship('Comment',
                                backref='posts',
@@ -125,6 +127,20 @@ class Post(db.Model):
 
     def __repr__(self):
         return "<Model Post `{}`>".format(self.title)
+
+
+class Category(db.Model):
+    __tablename__ = 'categories'
+    id = db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(64))
+    # Establish relationship many to many: posts <==> category
+    posts = db.relationship('Post',
+                            backref='categories',
+                            lazy='dynamic')
+
+    def __init__(self, id, name):
+        self.name = name
+        self.id = id
 
 
 class Comment(db.Model):

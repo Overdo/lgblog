@@ -10,6 +10,9 @@ from uuid import uuid4
 from flask_login import login_required, current_user
 from lgblog.extensions import poster_permission, admin_permission, cache
 from flask_principal import Permission, UserNeed, RoleNeed, abort
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 blog_blueprint = Blueprint(
     'blog',
@@ -28,34 +31,52 @@ def sidebar_data():
     ).limit(5).all()
 
     all_tags = Tag.query.order_by(Tag.id).all()
-    return recent, all_tags
+
+    categories = Category.query.order_by(Category.id).all()
+    return recent, all_tags, categories
 
 
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
 @blog_blueprint.route('/tag/<string:tag_name>/<int:page>')
 @blog_blueprint.route('/tag/<string:tag_name>')
+@blog_blueprint.route('/category/<string:category_name>/<int:page>')
+@blog_blueprint.route('/category/<string:category_name>')
 @cache.cached(timeout=60)
-def blog_list(page=1, tag_name=None):
+def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
     """View function for home page"""
-
+    if category_name:
+        category = db.session.query(Category).filter_by(name=category_name).first_or_404()
+        posts = category.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
+        recent, all_tags, categories = sidebar_data()
+        return render_template('blog/blog_list.html',
+                               posts=posts,
+                               category_name=category_name,
+                               tag_name=None,
+                               categories=categories,
+                               recent=recent,
+                               all_tags=all_tags)
     if tag_name:
         tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
         posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
-        recent, all_tags = sidebar_data()
+        recent, all_tags, categories = sidebar_data()
         return render_template('blog/blog_list.html',
                                posts=posts,
+                               category_name=None,
+                               categories=categories,
                                tag_name=tag_name,
                                recent=recent,
                                all_tags=all_tags)
     posts = Post.query.order_by(
         Post.publish_date.desc()
     ).paginate(page, 5)
-    recent, all_tags = sidebar_data()
+    recent, all_tags, categories = sidebar_data()
     return render_template('blog/blog_list.html',
                            posts=posts,
+                           category_name=None,
+                           tag_name=None,
+                           categories=categories,
                            all_tags=all_tags,
-                           tag_name=tag_name,
                            recent=recent)
 
 
@@ -90,11 +111,12 @@ def blog_detail(post_id):
     post = db.session.query(Post).get_or_404(post_id)
     tags = post.tags
     comments = post.comments.order_by(Comment.date.desc()).all()
-    recent, all_tags = sidebar_data()
+    recent, all_tags, categories = sidebar_data()
 
     return render_template('blog/blog_detail.html',
                            post=post,
                            tags=tags,
+                           categories=categories,
                            comments=comments,
                            all_tags=all_tags,
                            form=form,
@@ -107,11 +129,12 @@ def tag(tag_name, page=1):
     """View function for tag page"""
     tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
     posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
-    recent, all_tags = sidebar_data()
+    recent, all_tags, categories = sidebar_data()
 
     return render_template('blog/blog_list.html',
                            tag=tag,
                            posts=posts,
+                           categories=categories,
                            all_tags=all_tags,
                            recent=recent,
                            tag_name=tag_name)
@@ -122,7 +145,7 @@ def user(username):
     """View function for user page"""
     user = db.session.query(User).filter_by(username=username).first_or_404()
     posts = user.posts.order_by(Post.publish_date.desc()).all()
-    recent, all_tags = sidebar_data()
+    recent, all_tags, categories = sidebar_data()
 
     return render_template('blog/user.html',
                            user=user,

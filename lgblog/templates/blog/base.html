@@ -53,8 +53,8 @@
 
                 <ul id="nav" class="nav">
 
-                    <li><a href="index.html">Home</a></li>
-                    <li class="current"><span><a href="blog_list.html">Blog</a></span>
+                    <li><a href="{{ url_for('blog.blog_list') }}">Home</a></li>
+                    <li class="current"><span><a href="{{ url_for('blog.blog_list') }}">Blog</a></span>
                         <ul>
                             <li><a href="blog_list.html">Blog Index</a></li>
                             <li><a href="single.html">Post</a></li>

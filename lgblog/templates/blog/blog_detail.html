@@ -40,7 +40,7 @@
                         <p class="tags">
                             <span>Tagged in </span>:
                             {% for tag in post.tags %}
-                                <a href="#">{{ tag.name }}</a> /
+                                <a href="{{ url_for('blog.blog_list', tag_name=tag.name) }}">{{ tag.name }}</a>/
                             {% endfor %}
                         </p>
 
@@ -176,7 +176,8 @@
                         <ul>
                             {% for post in recent %}
                                 <!-- Set the link for recent posts. -->
-                                <li><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">{{ post.title }}</a></li>
+                                <li><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">{{ post.title }}</a>
+                                </li>
                             {% endfor %}
                         </ul>
 
@@ -194,13 +195,11 @@
                     <div class="widget widget_categories">
                         <h5 class="widget-title">Categories</h5>
                         <ul class="link-list cf">
-                            <li><a href="#">Designs</a></li>
-                            <li><a href="#">Internet</a></li>
-                            <li><a href="#">Typography</a></li>
-                            <li><a href="#">Photography</a></li>
-                            <li><a href="#">Web Development</a></li>
-                            <li><a href="#">Projects</a></li>
-                            <li><a href="#">Other Stuff</a></li>
+                            {% for category in categories %}
+                                <li>
+                                    <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">{{ category.name }}</a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
 

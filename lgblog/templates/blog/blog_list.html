@@ -48,20 +48,20 @@
             {% endfor %}
 
             {#      render_pagination      #}
-            {% macro render_pagination(pagination, endpoint, tag_name) %}
+            {% macro render_pagination(pagination, endpoint, tag_name, category_name) %}
                 <nav>
                     <ul class="pagination">
                         <li>
                             {% if pagination.has_prev %}
                                 <li>
-                                    <a href="{{ url_for('blog.blog_list', page=pagination.prev().page,tag_name=tag_name) }} "
+                                    <a href="{{ url_for('blog.blog_list', page=pagination.prev().page,tag_name=tag_name,category_name=category_name) }} "
                                        class="page-numbers prev"
                                        aria-label="Previous">Prev
                                     </a>
                                 </li>
                             {% else %}
                                 <li>
-                                    <span href="{{ url_for('blog.blog_list', page=1,tag_name=tag_name) }}"
+                                    <span href="{{ url_for('blog.blog_list', page=1,tag_name=tag_name,category_name=category_name) }}"
                                           class="page-numbers prev inactive"
                                           aria-label="Previous">Prev
                                     </span>
@@ -72,7 +72,7 @@
                             {% if page %}
                                 {% if page != pagination.page %}
                                     <li>
-                                        <a href="{{ url_for(endpoint, page=page,tag_name=tag_name) }}"
+                                        <a href="{{ url_for(endpoint, page=page,tag_name=tag_name,category_name=category_name) }}"
                                            class="page-numbers">
                                             {{ page }}
                                         </a>
@@ -85,7 +85,7 @@
                             {% endif %}
                         {% endfor %}
                         <li>
-                            <a href="{{ url_for('blog.blog_list', page=pagination.next().page ,tag_name=tag_name) }}"
+                            <a href="{{ url_for('blog.blog_list', page=pagination.next().page ,tag_name=tag_name,category_name=category_name) }}"
                                class="page-numbers next"
                                aria-label="Next">Next
                             </a>
@@ -97,7 +97,7 @@
             <!-- Pagination -->
             <nav class="col full pagination">
                 <ul>
-                    {{ render_pagination(posts, 'blog.blog_list',tag_name) }}
+                    {{ render_pagination(posts, 'blog.blog_list',tag_name,category_name) }}
                 </ul>
             </nav>
 
@@ -143,13 +143,11 @@
                 <div class="widget widget_categories">
                     <h5 class="widget-title">Categories</h5>
                     <ul class="link-list cf">
-                        <li><a href="#">Designs</a></li>
-                        <li><a href="#">Internet</a></li>
-                        <li><a href="#">Typography</a></li>
-                        <li><a href="#">Photography</a></li>
-                        <li><a href="#">Web Development</a></li>
-                        <li><a href="#">Projects</a></li>
-                        <li><a href="#">Other Stuff</a></li>
+                        {% for category in categories %}
+                            <li>
+                                <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">{{ category.name }}</a>
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
 
