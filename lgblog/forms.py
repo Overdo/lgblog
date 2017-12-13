@@ -4,6 +4,12 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from lgblog.models import User
 
 
+class SearchForm(FlaskForm):
+    """Post Form."""
+
+    text = StringField('Search Content', [DataRequired()])
+
+
 class PostForm(FlaskForm):
     """Post Form."""
 

@@ -1,0 +1,98 @@
+<!-- Replace the TITLE of template base.html -->
+{% extends "blog/base.html" %}
+{% block title %}LG's Blog{% endblock %}
+{% block span_title %}LG's Blog{% endblock %}
+
+<!-- Content
+================================================== -->
+<!-- Replace the BODY of template base.html -->
+{% block body %}
+
+    <div id="page-content" class="row">
+
+        <div id="primary" class="eight columns">
+            <!-- Get Pagination object-->
+            <h1> 额(⊙o⊙)… </h1>
+            <h1> 没有包含这个关键字的内容</h1>
+            <h1> 换个试试</h1>
+
+        </div> <!-- Primary End-->
+
+        {#  右边的内容  #}
+        <div id="secondary" class="four columns end">
+
+            <aside id="sidebar">
+
+                <div class="widget widget_search">
+                    <h5>Search</h5>
+                    <form action="{{ url_for('blog.search_blog',page=1) }}" method=post>
+                         {{ form.csrf_token }}
+                        <input class="text-search" type="text" name="search_string"
+                               onfocus="if (this.value == 'Search here...') { this.value = ''; }"
+                               onblur="if(this.value == '') { this.value = 'Search here...'; }" value="Search here...">
+                        <input type="submit" class="submit-search" value="">
+
+                    </form>
+                </div>
+
+                <div class="widget widget_text">
+                    <h5>Recent Posts</h5>
+                    <ul>
+                        {% for post in recent %}
+                            <!-- Set the link for recent posts. -->
+                            <li><a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">{{ post.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+
+                <div class="widget widget_text">
+                    <h5 class="widget-title">Text Widget</h5>
+                    <div class="textwidget">Proin gravida nibh vel velit auctor aliquet.
+                        Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum,
+                        nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus
+                        a sit amet mauris. Morbi accumsan ipsum velit.
+                    </div>
+                </div>
+
+                <div class="widget widget_categories">
+                    <h5 class="widget-title">Categories</h5>
+                    <ul class="link-list cf">
+                        {% for category in categories %}
+                            <li>
+                                <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">{{ category.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="widget widget_tag_cloud">
+                    <h5 class="widget-title">Tags</h5>
+                    <div class="tagcloud cf">
+                        {% for tag in all_tags %}
+                            <a href="{{ url_for('blog.blog_list', tag_name=tag.name) }}">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="widget widget_photostream">
+                    <h5>Photostream</h5>
+                    <ul class="photostream cf">
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                    </ul>
+                </div>
+
+            </aside>
+
+        </div> <!-- Secondary End-->
+
+    </div>
+
+{% endblock %}

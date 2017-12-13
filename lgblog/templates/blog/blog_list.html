@@ -48,20 +48,22 @@
             {% endfor %}
 
             {#      render_pagination      #}
-            {% macro render_pagination(pagination, endpoint, tag_name, category_name) %}
+            {% macro render_pagination(pagination, endpoint, tag_name, category_name,search_string) %}
                 <nav>
                     <ul class="pagination">
                         <li>
                             {% if pagination.has_prev %}
                                 <li>
-                                    <a href="{{ url_for('blog.blog_list', page=pagination.prev().page,tag_name=tag_name,category_name=category_name) }} "
+                                    <a href="{{ url_for('blog.blog_list', page=pagination.prev().page,tag_name=tag_name,
+                                    category_name=category_name,search_string=search_string) }} "
                                        class="page-numbers prev"
                                        aria-label="Previous">Prev
                                     </a>
                                 </li>
                             {% else %}
                                 <li>
-                                    <span href="{{ url_for('blog.blog_list', page=1,tag_name=tag_name,category_name=category_name) }}"
+                                    <span href="{{ url_for('blog.blog_list', page=1,
+                                    tag_name=tag_name,category_name=category_name,search_string=search_string) }}"
                                           class="page-numbers prev inactive"
                                           aria-label="Previous">Prev
                                     </span>
@@ -72,7 +74,8 @@
                             {% if page %}
                                 {% if page != pagination.page %}
                                     <li>
-                                        <a href="{{ url_for(endpoint, page=page,tag_name=tag_name,category_name=category_name) }}"
+                                        <a href="{{ url_for(endpoint, page=page,tag_name=tag_name,
+                                        ategory_name=category_name,search_string=search_string) }}"
                                            class="page-numbers">
                                             {{ page }}
                                         </a>
@@ -85,7 +88,8 @@
                             {% endif %}
                         {% endfor %}
                         <li>
-                            <a href="{{ url_for('blog.blog_list', page=pagination.next().page ,tag_name=tag_name,category_name=category_name) }}"
+                            <a href="{{ url_for('blog.blog_list', page=pagination.next().page
+                            ,tag_name=tag_name,category_name=category_name,search_string=search_string) }}"
                                class="page-numbers next"
                                aria-label="Next">Next
                             </a>
@@ -97,7 +101,7 @@
             <!-- Pagination -->
             <nav class="col full pagination">
                 <ul>
-                    {{ render_pagination(posts, 'blog.blog_list',tag_name,category_name) }}
+                    {{ render_pagination(posts, 'blog.blog_list',tag_name,category_name,search_string) }}
                 </ul>
             </nav>
 
@@ -110,9 +114,9 @@
 
                 <div class="widget widget_search">
                     <h5>Search</h5>
-                    <form action="#">
-
-                        <input class="text-search" type="text"
+                    <form action="{{ url_for('blog.search_blog',page=1) }}" method=post>
+                         {{ form.csrf_token }}
+                        <input class="text-search" type="text" name="search_string"
                                onfocus="if (this.value == 'Search here...') { this.value = ''; }"
                                onblur="if(this.value == '') { this.value = 'Search here...'; }" value="Search here...">
                         <input type="submit" class="submit-search" value="">

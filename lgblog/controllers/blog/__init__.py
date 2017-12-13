@@ -1,8 +1,8 @@
 from lgblog import db
 from flask import render_template, redirect, flash
 from lgblog.models import *
-from sqlalchemy import func
-from lgblog.forms import CommentForm, PostForm
+from sqlalchemy import func, or_
+from lgblog.forms import CommentForm, PostForm, SearchForm
 from os import path
 from flask import render_template, Blueprint, redirect, url_for, request
 from datetime import datetime
@@ -42,9 +42,26 @@ def sidebar_data():
 @blog_blueprint.route('/tag/<string:tag_name>')
 @blog_blueprint.route('/category/<string:category_name>/<int:page>')
 @blog_blueprint.route('/category/<string:category_name>')
+@blog_blueprint.route('/search/<string:search_string>/<int:page>')
 @cache.cached(timeout=60)
 def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
     """View function for home page"""
+    form = SearchForm()
+    logging.info(search_string)
+
+    if search_string:
+        posts = Post.query.filter(or_(Post.title.contains(search_string), Post.text.contains(search_string))) \
+            .order_by(Post.publish_date.desc()).paginate(page, 5)
+        recent, all_tags, categories = sidebar_data()
+        return render_template('blog/blog_list.html',
+                               posts=posts,
+                               search_string=search_string,
+                               category_name=None,
+                               form=form,
+                               tag_name=None,
+                               categories=categories,
+                               recent=recent,
+                               all_tags=all_tags)
     if category_name:
         category = db.session.query(Category).filter_by(name=category_name).first_or_404()
         posts = category.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
@@ -53,6 +70,8 @@ def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
                                posts=posts,
                                category_name=category_name,
                                tag_name=None,
+                               form=form,
+                               search_string=None,
                                categories=categories,
                                recent=recent,
                                all_tags=all_tags)
@@ -63,6 +82,8 @@ def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
         return render_template('blog/blog_list.html',
                                posts=posts,
                                category_name=None,
+                               search_string=None,
+                               form=form,
                                categories=categories,
                                tag_name=tag_name,
                                recent=recent,
@@ -75,9 +96,58 @@ def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
                            posts=posts,
                            category_name=None,
                            tag_name=None,
+                           form=form,
+                           search_string=None,
                            categories=categories,
                            all_tags=all_tags,
                            recent=recent)
+
+
+@blog_blueprint.route('/search/<int:page>', methods=('GET', 'POST'))
+def search_blog(page=1):
+    form = SearchForm()
+    recent, all_tags, categories = sidebar_data()
+
+    if request.form['search_string'] and request.method == 'POST':
+
+        search_string = request.form['search_string']
+        posts = Post.query.filter(or_(Post.title.contains(search_string), Post.text.contains(search_string))) \
+            .order_by(Post.publish_date.desc())
+        if len(posts.all()) < 1:
+            posts = Post.query.order_by(
+                Post.publish_date.desc()
+            ).paginate(page, 5)
+            return render_template('blog/blog_404.html',
+                                   posts=posts,
+                                   category_name=None,
+                                   tag_name=None,
+                                   form=form,
+                                   search_string=None,
+                                   categories=categories,
+                                   all_tags=all_tags,
+                                   recent=recent)
+        else:
+            return render_template('blog/blog_list.html',
+                                   posts=posts.paginate(page, 5),
+                                   form=form,
+                                   search_string=search_string,
+                                   category_name=None,
+                                   tag_name=None,
+                                   categories=categories,
+                                   recent=recent,
+                                   all_tags=all_tags)
+    else:
+
+        posts = Post.query.order_by(Post.publish_date.desc()).paginate(page, 5)
+        return render_template('blog/blog_list.html',
+                               posts=posts,
+                               category_name=None,
+                               tag_name=None,
+                               form=form,
+                               search_string=None,
+                               categories=categories,
+                               all_tags=all_tags,
+                               recent=recent)
 
 
 def make_cache_key(*args, **kwargs):
@@ -127,6 +197,7 @@ def blog_detail(post_id):
 @cache.cached(timeout=7200)
 def tag(tag_name, page=1):
     """View function for tag page"""
+    form = SearchForm()
     tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
     posts = tag.posts.order_by(Post.publish_date.desc()).paginate(page, 5)
     recent, all_tags, categories = sidebar_data()
@@ -134,6 +205,7 @@ def tag(tag_name, page=1):
     return render_template('blog/blog_list.html',
                            tag=tag,
                            posts=posts,
+                           form=form,
                            categories=categories,
                            all_tags=all_tags,
                            recent=recent,
