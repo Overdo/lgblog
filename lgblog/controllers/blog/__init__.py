@@ -232,16 +232,41 @@ def user(username):
 @login_required
 def new_blog():
     """View function for new_port."""
-    form = PostForm()
+    form = ArticleForm()
     if not current_user:
         flash("you need login!!!")
         return redirect(url_for('blog.blog_list'))
 
     if form.validate_on_submit():
+
         new_post = Post(id=str(uuid4()), title=form.title.data)
-        new_post.text = form.text.data
+        new_post.text = form.content.data
         new_post.publish_date = datetime.now()
         new_post.user_id = current_user.get_id()
+
+        category_name = db.session.query(Category).filter_by(name=form.category.data).first()
+        if category_name:
+            category_name.posts.append(new_post)
+            db.session.add(category_name)
+        else:
+            new_category = Category(id=str(uuid4()), name=form.category.data)
+            new_category.posts.append(new_post)
+            db.session.add(new_category)
+
+        tags = form.tag.data.strip().split(';')
+        for tag in tags:
+            if len(tag) < 1:
+                continue
+            # 检查数据库中有没有tag，没有就新建，有就直接添加
+            tag_name = db.session.query(Tag).filter_by(name=tag).first()
+            if tag_name:
+                tag_name.posts.append(new_post)
+                db.session.add(tag_name)
+            else:
+                new_tag = Tag(id=str(uuid4()), name=tag)
+                new_tag.posts.append(new_post)
+                db.session.add(new_tag)
+
         role = db.session.query(Role).filter_by(name='poster').first()
         role.users.append(current_user)
         db.session.add(new_post)
@@ -251,66 +276,6 @@ def new_blog():
 
     return render_template('blog/blog_new.html',
                            form=form)
-
-
-@blog_blueprint.route('/new_example', methods=['GET', 'POST'])
-@login_required
-def new_example():
-    """View function for new_port."""
-    form = ArticleForm()
-
-    data = form.content.data
-    reg = re.compile(r'author:(.*?)title:(.*?)categories:(.*?)description:(.*?)tags:(.*?)说明：以上6行是必填内容', re.S)
-    config = reg.search(data)
-    author = config.group(1).strip()
-    title = config.group(2).strip()
-    categories = config.group(3).strip()
-    description = config.group(4).strip()
-    tags = config.group(5).strip().split(';')
-    content = re.split('以下是正文内容', data, 1)[1].strip()
-
-    logging.info('==================================' + config.group(5) + '-----'+str(tags))
-    if not current_user:
-        logging.info('=================you need login====================')
-        return redirect(url_for('blog.blog_list'))
-
-    # if form.validate_on_submit():
-    new_post = Post(id=str(uuid4()), title=title)
-    new_post.text = content
-    new_post.publish_date = datetime.now()
-    new_post.user_id = current_user.get_id()
-
-    category_name = db.session.query(Category).filter_by(name=categories).first()
-    if category_name:
-        category_name.posts.append(new_post)
-        db.session.add(category_name)
-    else:
-        new_category = Category(id=str(uuid4()), name=categories)
-        new_category.posts.append(new_post)
-        db.session.add(new_category)
-
-    for tag in tags:
-        if len(tag) < 1:
-            continue
-        # 检查数据库中有没有tag，没有就新建，有就直接添加
-        tag_name = db.session.query(Tag).filter_by(name=tag).first()
-        if tag_name:
-            tag_name.posts.append(new_post)
-            db.session.add(tag_name)
-        else:
-            new_tag = Tag(id=str(uuid4()), name=tag)
-            new_tag.posts.append(new_post)
-            db.session.add(new_tag)
-
-    role = db.session.query(Role).filter_by(name='poster').first()
-    role.users.append(current_user)
-    db.session.add(new_post)
-    db.session.add(role)
-    db.session.commit()
-    return redirect(url_for('blog.blog_list'))
-    #
-    # return render_template('blog/simple.html',
-    #                        form=form)
 
 
 @blog_blueprint.route('/edit/<string:id>', methods=['GET', 'POST'])

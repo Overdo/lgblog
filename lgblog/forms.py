@@ -21,7 +21,9 @@ class ArticleForm(FlaskForm):
     """Article Form"""
     content = TextAreaField('Article Content', [DataRequired()])
     title = StringField('Title', [DataRequired(), Length(max=255)])
-    text = TextAreaField('Blog Content', [DataRequired()])
+    category = StringField('Title', [DataRequired(), Length(max=255)])
+    author = StringField('Author', [DataRequired(), Length(max=255)])
+    tag = StringField('Tag', [DataRequired(), Length(max=255)])
 
 
 class CommentForm(FlaskForm):

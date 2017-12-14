@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8"/>
-    <title>Simple example - Editor.md examples</title>
+    <title>New Blog</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='markdown_static_file/css/style.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='markdown_static_file/css/editormd.css') }}"/>
     <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon"/>
@@ -12,9 +12,22 @@
     <header>
         <h1>New Blog</h1>
     </header>
-    <form method="post" action="{{ url_for('blog.new_example') }}">
+    <form method="post" action="{{ url_for('blog.new_blog') }}">
         {{ form.hidden_tag() }}
-        <div id="test-editormd">
+        <div class="input-group">
+
+            please input： Article title:
+            <input name="title" placeholder="Arcticle title" class="form-control" type="text">
+            、Author Name:
+            <input name="author" placeholder="Author Name" class="form-control" type="text">
+            、Category:
+            <input name="category" placeholder="Category" class="form-control" type="text">
+            、Tags:
+            <input name="tag" placeholder="just like tag1;tag2;tag3" class="form-control" type="text">
+        </div>
+
+
+        <div id="content-editor">
 
                 <textarea style="display:none;" name="content">说明：以下6行是必填内容，在冒号后面填写，其中多个tag用；分隔
 author: post
@@ -51,7 +64,7 @@ tags: java;c++;kotlin
             images/
             plugins/
             examples/
-            languages/     
+            languages/
             editormd.js
             ...
 
@@ -65,33 +78,49 @@ tags: java;c++;kotlin
 </textarea>
         </div>
         <div style="width:90%;margin: 10px auto;">
-            <input type="submit" name="submit" value="Submit" style="padding: 5px;"  onclick="if(confirm('确认提交吗？')==false)return false;"/>
+            <input type="submit" name="submit" value="Submit" style="padding: 5px;"
+                   onclick="onSubmit(form)"/>
         </div>
     </form>
 </div>
 <script src="{{ url_for('static', filename='markdown_static_file/js/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='markdown_static_file/js/editormd.min.js') }}"></script>
 <script type="text/javascript">
-    var testEditor;
+    var ContentEditor;
 
     $(function () {
-        testEditor = editormd("test-editormd", {
+
+        ContentEditor = editormd("content-editor", {
             width: "90%",
             height: 640,
             syncScrolling: "single",
             path: "{{ url_for('static', filename='markdown_static_file/lib/') }}"
         });
 
-        /*
-        // or
-        testEditor = editormd({
-            id      : "test-editormd",
-            width   : "90%",
-            height  : 640,
-            path    : "../lib/"
-        });
-        */
+
     });
+
+
+    function checkForm(form) {
+        for (var i = 0; i < form.elements.length; i++) {
+            if (form.elements[i].type == "text" && form.elements[i].value == "") {
+                alert("Fill out ALL fields.");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function onSubmit(form) {
+        if (checkForm(form))
+            if (confirm('确认提交吗？') == true)
+                return true;
+            else
+                return false;
+    }
+
 </script>
+
+
 </body>
 </html>
