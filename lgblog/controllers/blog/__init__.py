@@ -181,6 +181,7 @@ def blog_detail(post_id):
 
     post = db.session.query(Post).get_or_404(post_id)
     category = db.session.query(Category).get_or_404(post.category_id)
+    content = markdown2.markdown(post.text)
     tags = post.tags
     comments = post.comments.order_by(Comment.date.desc()).all()
     recent, all_tags, categories = sidebar_data()
@@ -188,6 +189,7 @@ def blog_detail(post_id):
     return render_template('blog/blog_detail.html',
                            post=post,
                            tags=tags,
+                           content=content,
                            category=category,
                            categories=categories,
                            comments=comments,
@@ -241,7 +243,7 @@ def new_blog():
     if form.validate_on_submit():
 
         new_post = Post(id=str(uuid4()), title=form.title.data)
-        new_post.text = str(markdown2.markdown(form.content.data))
+        new_post.text = form.content.data
         new_post.publish_date = datetime.now()
         new_post.user_id = current_user.get_id()
 

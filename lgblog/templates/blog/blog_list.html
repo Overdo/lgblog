@@ -39,7 +39,7 @@
 
                     <div class="post-content">
 
-                        <p>{{ post.text | truncate(255) | safe }} </p>
+                        <p>{{ post.text |replace('#',"")|replace('*','')|replace('\n','')| truncate(255) | safe }} </p>
                         <!-- Set the link for read more -->
                         <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}">Read More</a>
                     </div>

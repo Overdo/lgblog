@@ -26,6 +26,7 @@ class ArticleForm(FlaskForm):
     tag = StringField('Tag', [DataRequired(), Length(max=255)])
 
 
+
 class CommentForm(FlaskForm):
     """Form vaildator for comment."""
 
