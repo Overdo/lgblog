@@ -31,12 +31,6 @@
                         </p>
                     </div>
 
-                    <div class="post-thumb">
-                        <a href="{{ url_for('blog.blog_detail', post_id=post.id) }}" title=""><img
-                                src="images/post-image/post-image-1300x500-01.jpg"
-                                alt="post-image" title="post-image"></a>
-                    </div>
-
                     <div class="post-content">
 
                         <p>{{ post.text |replace('#',"")|replace('*','')|replace('\n','')| truncate(255) | safe }} </p>
@@ -115,7 +109,7 @@
                 <div class="widget widget_search">
                     <h5>Search</h5>
                     <form action="{{ url_for('blog.search_blog',page=1) }}" method=post>
-                         {{ form.csrf_token }}
+                        {{ form.csrf_token }}
                         <input class="text-search" type="text" name="search_string"
                                onfocus="if (this.value == 'Search here...') { this.value = ''; }"
                                onblur="if(this.value == '') { this.value = 'Search here...'; }" value="Search here...">
@@ -167,14 +161,15 @@
                 <div class="widget widget_photostream">
                     <h5>Photostream</h5>
                     <ul class="photostream cf">
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
-                        <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
+                        <li><a href="#"><img src="{{ url_for('static', filename='images/thumb.jpg') }}" alt="thumbnail"></a></li>
                     </ul>
                 </div>
 
