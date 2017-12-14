@@ -179,6 +179,7 @@ def blog_detail(post_id):
         db.session.commit()
 
     post = db.session.query(Post).get_or_404(post_id)
+    category = db.session.query(Category).get_or_404(post.category_id)
     tags = post.tags
     comments = post.comments.order_by(Comment.date.desc()).all()
     recent, all_tags, categories = sidebar_data()
@@ -186,6 +187,7 @@ def blog_detail(post_id):
     return render_template('blog/blog_detail.html',
                            post=post,
                            tags=tags,
+                           category=category,
                            categories=categories,
                            comments=comments,
                            all_tags=all_tags,
@@ -247,7 +249,7 @@ def new_blog():
         db.session.commit()
         return redirect(url_for('blog.blog_list'))
 
-    return render_template('blog/simple.html',
+    return render_template('blog/blog_new.html',
                            form=form)
 
 

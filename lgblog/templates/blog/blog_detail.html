@@ -21,10 +21,7 @@
 
                             <time class="date" datetime=" {{ post.publish_date }}"> {{ post.publish_date }}</time>
                             <span class="categories">
-                                Categories
-                                {% for tag in post.tags %}
-                                    <a href="#">{{ tag.name }}</a> /
-                                {% endfor %}
+                                <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">Categories：{{ category.name }}</a>
                             </span>
 
                         </p>
