@@ -1,3 +1,4 @@
+import markdown2
 import re
 from lgblog import db
 from flask import render_template, redirect, flash
@@ -240,7 +241,7 @@ def new_blog():
     if form.validate_on_submit():
 
         new_post = Post(id=str(uuid4()), title=form.title.data)
-        new_post.text = form.content.data
+        new_post.text = str(markdown2.markdown(form.content.data))
         new_post.publish_date = datetime.now()
         new_post.user_id = current_user.get_id()
 
