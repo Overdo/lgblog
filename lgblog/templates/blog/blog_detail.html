@@ -21,7 +21,7 @@
 
                             <time class="date" datetime=" {{ post.publish_date }}"> {{ post.publish_date }}</time>
                             <span class="categories">
-                                <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">Categories：{{ category.name }}</a>
+                                <a href="{{ url_for('blog.blog_list', category_name=category.name) }}">{{ category.name }}</a>
                             </span>
 
                         </p>
