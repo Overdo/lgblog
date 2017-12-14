@@ -1,8 +1,9 @@
+import re
 from lgblog import db
 from flask import render_template, redirect, flash
 from lgblog.models import *
 from sqlalchemy import func, or_
-from lgblog.forms import CommentForm, PostForm, SearchForm
+from lgblog.forms import CommentForm, PostForm, SearchForm, ArticleForm
 from os import path
 from flask import render_template, Blueprint, redirect, url_for, request
 from datetime import datetime
@@ -47,7 +48,6 @@ def sidebar_data():
 def blog_list(page=1, tag_name=None, category_name=None, search_string=None):
     """View function for home page"""
     form = SearchForm()
-    logging.info(search_string)
 
     if search_string:
         posts = Post.query.filter(or_(Post.title.contains(search_string), Post.text.contains(search_string))) \
@@ -228,10 +228,9 @@ def user(username):
 
 @blog_blueprint.route('/new', methods=['GET', 'POST'])
 @login_required
-def new_post():
+def new_blog():
     """View function for new_port."""
     form = PostForm()
-
     if not current_user:
         flash("you need login!!!")
         return redirect(url_for('blog.blog_list'))
@@ -248,8 +247,68 @@ def new_post():
         db.session.commit()
         return redirect(url_for('blog.blog_list'))
 
-    return render_template('blog/new_post.html',
+    return render_template('blog/simple.html',
                            form=form)
+
+
+@blog_blueprint.route('/new_example', methods=['GET', 'POST'])
+@login_required
+def new_example():
+    """View function for new_port."""
+    form = ArticleForm()
+
+    data = form.content.data
+    reg = re.compile(r'author:(.*?)title:(.*?)categories:(.*?)description:(.*?)tags:(.*?)说明：以上6行是必填内容', re.S)
+    config = reg.search(data)
+    author = config.group(1).strip()
+    title = config.group(2).strip()
+    categories = config.group(3).strip()
+    description = config.group(4).strip()
+    tags = config.group(5).strip().split(';')
+    content = re.split('以下是正文内容', data, 1)[1].strip()
+
+    logging.info('==================================' + config.group(5) + '-----'+str(tags))
+    if not current_user:
+        logging.info('=================you need login====================')
+        return redirect(url_for('blog.blog_list'))
+
+    # if form.validate_on_submit():
+    new_post = Post(id=str(uuid4()), title=title)
+    new_post.text = content
+    new_post.publish_date = datetime.now()
+    new_post.user_id = current_user.get_id()
+
+    category_name = db.session.query(Category).filter_by(name=categories).first()
+    if category_name:
+        category_name.posts.append(new_post)
+        db.session.add(category_name)
+    else:
+        new_category = Category(id=str(uuid4()), name=categories)
+        new_category.posts.append(new_post)
+        db.session.add(new_category)
+
+    for tag in tags:
+        if len(tag) < 1:
+            continue
+        # 检查数据库中有没有tag，没有就新建，有就直接添加
+        tag_name = db.session.query(Tag).filter_by(name=tag).first()
+        if tag_name:
+            tag_name.posts.append(new_post)
+            db.session.add(tag_name)
+        else:
+            new_tag = Tag(id=str(uuid4()), name=tag)
+            new_tag.posts.append(new_post)
+            db.session.add(new_tag)
+
+    role = db.session.query(Role).filter_by(name='poster').first()
+    role.users.append(current_user)
+    db.session.add(new_post)
+    db.session.add(role)
+    db.session.commit()
+    return redirect(url_for('blog.blog_list'))
+    #
+    # return render_template('blog/simple.html',
+    #                        form=form)
 
 
 @blog_blueprint.route('/edit/<string:id>', methods=['GET', 'POST'])

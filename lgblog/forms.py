@@ -17,6 +17,13 @@ class PostForm(FlaskForm):
     text = TextAreaField('Blog Content', [DataRequired()])
 
 
+class ArticleForm(FlaskForm):
+    """Article Form"""
+    content = TextAreaField('Article Content', [DataRequired()])
+    title = StringField('Title', [DataRequired(), Length(max=255)])
+    text = TextAreaField('Blog Content', [DataRequired()])
+
+
 class CommentForm(FlaskForm):
     """Form vaildator for comment."""
 

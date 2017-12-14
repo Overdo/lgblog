@@ -3,7 +3,7 @@
 {% block body %}
     <div class="row">
         <h1 class="text-center">Create A New Post</h1>
-        <form method="POST" action="{{ url_for('blog.new_post') }}">
+        <form method="POST" action="{{ url_for('blog.new_blog') }}">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.title.label }}

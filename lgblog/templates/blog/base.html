@@ -56,8 +56,7 @@
                     <li><a href="{{ url_for('blog.blog_list') }}">Home</a></li>
                     <li class="current"><span><a href="{{ url_for('blog.blog_list') }}">Blog</a></span>
                         <ul>
-                            <li><a href="blog_list.html">Blog Index</a></li>
-                            <li><a href="single.html">Post</a></li>
+                            <li><a href="{{ url_for('blog.new_blog') }}">New</a></li>
                         </ul>
                     </li>
                     <li><span><a href="portfolio-index.html">Portfolio</a></span>

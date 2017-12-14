@@ -1,28 +1,40 @@
-{% extends "base.html" %}
-{% block body %}
-    <div class="col-lg-3">
-        <!-- Set the form -->
-        <form method="POST" action="{{ url_for('main.login') }}">
-            {{ form.hidden_tag() }}
-            <div>
-                {{ form.username.label }}
-                {% if form.username.errors %}
-                    {% for e in form.username.errors %}
-                        <p class="help-block">{{ e }}</p>
-                    {% endfor %}
-                {% endif %}
-                {{ form.username(class_="form-control") }}
-            </div>
-            <div class="form-group">
-                {{ form.password.label }}
-                {% if form.password.errors %}
-                    {% for e in form.password.errors %}
-                        <p class="help-block">{{ e }}</p>
-                    {% endfor %}
-                {% endif %}
-                {{ form.password(class_='form-control') }}
-            </div>
-            <input class="btn btn-primary" type="submit" value="Login">
-        </form>
-    </div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>login</title>
+    <!--[if IE]>
+
+    <![endif]-->
+</head>
+<body>
+<div class="col-lg-3" >
+
+    <!-- Set the form -->
+    <form method="POST" action="{{ url_for('main.login') }}">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}
+            {% if form.username.errors %}
+                {% for e in form.username.errors %}
+                    <p class="help-block">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+            {{ form.username(class_="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label }}
+            {% if form.password.errors %}
+                {% for e in form.password.errors %}
+                    <p class="help-block">{{ e }}</p>
+                {% endfor %}
+            {% endif %}
+            {{ form.password(class_='form-control') }}
+        </div>
+        <input class="btn btn-primary" type="submit" value="Login">
+    </form>
+</div>
+</body>
+</html>
