@@ -150,10 +150,12 @@ class Comment(db.Model):
     id = db.Column(db.String(45), primary_key=True)
     name = db.Column(db.String(255))
     text = db.Column(db.Text())
+    email = db.Column(db.String(255))
     date = db.Column(db.DateTime())
     post_id = db.Column(db.String(45), db.ForeignKey('posts.id'))
 
-    def __init__(self, name):
+    def __init__(self,id, name):
+        self.id = id
         self.name = name
 
     def __repr__(self):

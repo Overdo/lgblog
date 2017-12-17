@@ -6,6 +6,7 @@ from sqlalchemy import or_, and_
 from lgblog.models import *
 from uuid import uuid4
 from flask_principal import Permission, RoleNeed
+import datetime
 
 manager = Manager(app)
 
@@ -80,6 +81,7 @@ def init_database():
     db.session.add(role_admin)
     db.session.add(role_poster)
     db.session.add(role_default)
+
     db.session.commit()
 
     for i in range(100):
@@ -89,7 +91,14 @@ def init_database():
         new_post.text = 'this is example textbalabalabsakdhjaslkdjlsajdljasldjlaskjdlasjdlkajslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjslkdjasldjlaskjdlasjdlkasjdlkasjdlkasjdlkjsaldkjaslkdjlkasjdlaskjdlaskjdlasjdlkasjd'
         new_post.tags = random.sample(tag_list, random.randint(1, 3))
         new_post.category_id = catagory_list[random.randint(0, 4)].id
+
+        comment = Comment(id=str(uuid4()), name='tester :' + str(i))
+        comment.text = 'comment  Test'
+        comment.date = datetime.datetime.now()
+        comment.post_id = new_post.id
+
         db.session.add(new_post)
+        db.session.add(comment)
 
     db.session.commit()
 

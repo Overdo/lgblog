@@ -26,7 +26,6 @@ class ArticleForm(FlaskForm):
     tag = StringField('Tag', [DataRequired(), Length(max=255)])
 
 
-
 class CommentForm(FlaskForm):
     """Form vaildator for comment."""
 
@@ -36,7 +35,11 @@ class CommentForm(FlaskForm):
         'Name',
         validators=[DataRequired(), Length(max=255)])
 
-    text = TextAreaField(u'Comment', validators=[DataRequired()])
+    email = StringField(
+        'Email',
+        validators=[DataRequired(), Length(max=255)])
+
+    text = TextAreaField('Comment', validators=[DataRequired()])
 
 
 class LoginForm(FlaskForm):
