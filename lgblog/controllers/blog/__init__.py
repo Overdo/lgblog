@@ -322,3 +322,8 @@ def edit_post(id):
     form.title.data = post.title
     form.text.data = post.text
     return render_template('blog/edit_post.html', form=form, post=post)
+
+
+@blog_blueprint.route('/developing')
+def developing():
+    return "开发中。。。"

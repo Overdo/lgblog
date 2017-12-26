@@ -43,7 +43,7 @@
         <div class="twelve columns">
 
             <div class="logo">
-                <a href="index.html"><img alt="" src="{{ url_for('static', filename='images/logo.png') }}"></a>
+                <a href="{{ url_for('blog.blog_list') }}"><img alt="" src="{{ url_for('static', filename='images/logo.png') }}"></a>
             </div>
 
             <nav id="nav-wrap">
@@ -56,19 +56,11 @@
                     <li><a href="{{ url_for('blog.blog_list') }}">Home</a></li>
                     <li class="current"><span><a href="{{ url_for('blog.blog_list') }}">Blog</a></span>
                         <ul>
-                            <li><a href="{{ url_for('blog.new_blog') }}">New</a></li>
+                            <li><a href="{{ url_for('blog.new_blog') }}">新建博客</a></li>
                         </ul>
                     </li>
-                    <li><span><a href="{{ url_for('blog.new_blog') }}">NewBlog</a></span>
-                        <ul>
-                            <li><a href="portfolio-index.html">Portfolio Index</a></li>
-                            <li><a href="portfolio.html">Portfolio Entry</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="styles.html">Features</a></li>
-
+                    <li><a href="{{ url_for('blog.blog_list') }}">About</a></li>
+                    <li><a href="{{ url_for('blog.blog_list') }}">Contact</a></li>
                 </ul> <!-- end #nav -->
 
             </nav> <!-- end #nav-wrap -->
@@ -88,8 +80,7 @@
         <div class="ten columns centered text-center">
             <h1>{% block span_title %}LG's Blog{% endblock %}<span>.</span></h1>
 
-            <p>Aenean condimentum, lacus sit amet luctus lobortis, dolores et quas molestias excepturi
-                enim tellus ultrices elit, amet consequat enim elit noneas sit amet luctu. </p>
+            <p>这是一个基于flask的博客demo,后台使用mysql+sqlchemy存数据,新建博客支持markdowm,后台管理使用flask_admin实现.测试账户密码名都是overdo </p>
         </div>
 
     </div>
