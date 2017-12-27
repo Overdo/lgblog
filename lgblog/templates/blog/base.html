@@ -28,7 +28,7 @@
 
     <!-- Favicons
      ================================================== -->
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
 </head>
 
@@ -95,15 +95,6 @@
     {% block body %}
         body_content
     {% endblock %}
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class=flashes>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
 </div>
 <!-- Content End
 ================================================== -->
