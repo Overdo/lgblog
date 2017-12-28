@@ -1,7 +1,5 @@
 #### this is a flask blog system
 
-py3   
-
 #### require
 
 - Python: 3.5
