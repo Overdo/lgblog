@@ -6,7 +6,7 @@
 - flask：0.12.2
 - Mysql：57
 
-demo： http://lgtal.top
+demo： http://65.49.193.244
 
 #### usage
 
