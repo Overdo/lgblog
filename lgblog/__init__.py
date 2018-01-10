@@ -64,13 +64,14 @@ from lgblog.models import *
 from lgblog.controllers.admin import CustomModelView, PostView
 
 # Init the Flask-Admin via app object
-flask_admin.init_app(app)
+flask_admin.init_app(app,)
+
 # Register view function `CustomModelView` into Flask-Admin
 models = [Role, Tag, User]
 for model in models:
     flask_admin.add_view(
-        CustomModelView(model, db.session, category='Models'))
-flask_admin.add_view(PostView(Post, db.session, category='Models'))
+        CustomModelView(model, db.session))
+flask_admin.add_view(PostView(Post, db.session))
 
 from lgblog.extensions import restful_api
 

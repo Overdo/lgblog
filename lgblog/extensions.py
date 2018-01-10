@@ -3,6 +3,8 @@ from flask_login import LoginManager
 from flask_principal import Principal, Permission, RoleNeed
 from flask_cache import Cache
 from flask_restful import Api
+import flask_login
+from flask import redirect,url_for
 
 bcrypt = Bcrypt()
 
@@ -33,10 +35,19 @@ default_permission = Permission(RoleNeed('default'))
 # Create the Flask-Cache's instance
 cache = Cache()
 
-from flask_admin import Admin
+from flask_admin import Admin,expose
+import flask_admin
+
+class MyAdminIndexView(flask_admin.AdminIndexView):
+
+    @expose('/')
+    def index(self):
+        if not flask_login.current_user.is_authenticated:
+            return redirect(url_for('main.login'))
+        return super(MyAdminIndexView, self).index()
 
 # Create the Flask-Admin's instance
-flask_admin = Admin()
+flask_admin = Admin(index_view=MyAdminIndexView())
 
 # Create the Flask-Restful's instance
 restful_api = Api()
