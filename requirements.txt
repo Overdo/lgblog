@@ -38,7 +38,7 @@ requests==2.18.4
 six==1.11.0
 SQLAlchemy==1.1.15
 Unidecode==0.4.21
-urllib3==1.22
+urllib3==1.26.5
 webencodings==0.5.1
 Werkzeug==0.13
 WTForms==2.1
